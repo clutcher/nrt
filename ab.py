@@ -3,7 +3,6 @@
 
 import networkx as nx
 import matplotlib.pyplot as plt
-import time
 
 import lib.generator as generator
 import lib.graphics as graphics
@@ -11,12 +10,11 @@ import lib.calculation as calculation
 
 if __name__ == '__main__':
 
-    startTime = time.time()
-    #r -
+    #r - the coefficient of bribery
     r = 0.0
-    #rc -
+    #rc - critical coefficient of bribery
     rc = 0
-    #rlist - list of r, where r>rc
+    #rlist - list of r, where r > rc
     rlist = []
     #rfull - list of  r
     rfull = []
@@ -31,12 +29,7 @@ if __name__ == '__main__':
 
     #Generate many networks for making nyu graphic
     while r < 1:
-#        @fixme test generator BA, sumk
         G = generator.evolveN(1000, 20, r, 3)
-#        graphics.make_rank_distribution(G, r)
-#        line = repr(calculation.calculate_nyu(G))
-#        line += '\n'
-#        f.write(line.encode('utf-8'))
         rfull.append(r)
         clustering.append(nx.average_clustering(G))
         shortpath.append(nx.average_shortest_path_length(G))
@@ -49,31 +42,19 @@ if __name__ == '__main__':
             nyu.append(nyutemp)
         r = r + 0.01
 
-#    G = generator.evolveN(N, 20, r, 3)
-#    BA = nx.generators.random_graphs.barabasi_albert_graph(100,3)
+#        graphics.make_graph(G)
+        graphics.make_probability_graphic(G)
+        graphics.make_degree_histogram(G)
+        graphics.make_rank_distribution(G)
 
-    endTime = time.time()
-#    print endTime-startTime
-
-#    graphics.make_graph(G)
-#    graphics.make_graph(BA)
-#    graphics.make_probability_graphic(G)
-#    graphics.make_probability_graphic(BA)
-#    graphics.make_degree_histogram(BA)
-#    graphics.make_rank_distribution(G, r)
-#    graphics.make_rank_distribution(BA)
     graphics.make_nyu_graphic(nyu, rlist)
     graphics.make_clustering_graphic(clustering, rfull)
     graphics.make_shortest_path_graphic(shortpath, rfull)
-#    print time.time()-endTime
 
-    #nyu ~ (r-rc)^t
-#    print calculation.calculate_nyu(G)
-#    print nx.clustering(G)
+#    plt.show()
 
 #    print nx.betweenness_centrality(G)
 #    print nx.info(G)
 #    print "Clustering: " + nx.average_clustering(G)
 #    print "Shortest path length: " + nx.average_shortest_path_length(G)
 #    nx.write_edgelist(G, "edgelist.graph")
-    plt.show()

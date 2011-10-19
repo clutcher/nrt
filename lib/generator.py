@@ -23,7 +23,8 @@ def evolveN(m, m0, r, n):
     #Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
-    aGraph.name = "Barabasi-Albert Graph"
+    name = "ba_m=" + repr(m) + "_r=" + repr(r) + "_n=" + repr(r)
+    aGraph.name = name
 
     #Add first n nodes
     for new in xrange(m0):

@@ -36,7 +36,8 @@ def make_graph(aGraph):
     ymax = 1.02 * max(yy for xx, yy in pos.values())
     plt.xlim(0, xmax)
     plt.ylim(0, ymax)
-    plt.savefig("Graphics/graph.png")
+    fname = "Graphics/graph/" + aGraph.name + ".png"
+    plt.savefig(fname)
 
 
 def make_probability_graphic(aGraph):
@@ -96,7 +97,8 @@ def make_probability_graphic(aGraph):
     plt.text(1, 0.02, text)
     plt.xlabel("Degree of nodes")
     plt.ylabel("Probability P(k)")
-    fig.savefig("Graphics/probability.png")
+    fname = "Graphics/probability/" + aGraph.name + ".png"
+    plt.savefig(fname)
     return fig
 
 
@@ -110,14 +112,15 @@ def make_degree_histogram(aGraph):
     plt.xlim(0, len(xi))
     plt.xlabel("Degree of node")
     plt.ylabel("Number of nodes with x degree")
-    fig.savefig("Graphics/degree.png")
+    fname = "Graphics/degree_hist/" + aGraph.name + ".png"
+    plt.savefig(fname)
     return fig
 
 
-def make_rank_distribution(aGraph, r):
+def make_rank_distribution(aGraph):
     """Make rank distribution by degree graphic"""
     fig = plt.figure()
-    plt.title("Rank distribution, r= " + repr(r))
+    plt.title("Rank distribution")
     yi = list(aGraph.degree().values())
     yi.sort(reverse=True)
     xi = [x for x in xrange(len(yi))]
@@ -126,8 +129,8 @@ def make_rank_distribution(aGraph, r):
     plt.xscale('log')
     plt.xlabel("Node")
     plt.ylabel("Degree")
-    fname = "Graphics/rank/r=" + repr(r) + ".png"
-    fig.savefig(fname)
+    fname = "Graphics/rank/" + aGraph.name + ".png"
+    plt.savefig(fname)
     return fig
 
 
