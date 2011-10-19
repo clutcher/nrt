@@ -36,10 +36,7 @@ def evolveN(m, m0, r, n):
 #    aGraph.add_edge(0,m0-1)
 
     #Calculating probability for first m0 nodes
-    sumk = sum(aGraph.degree())
-#    sumk = 0
-#    for i in xrange(m0):
-#        sumk += aGraph.degree(i)
+    sumk = sum(aGraph.degree().values())
     for k in xrange(m0):
         aGraph.probability[k] = aGraph.degree(k) / float(sumk)
 
@@ -59,10 +56,7 @@ def evolveN(m, m0, r, n):
                         break
 
         #Recalculating probability
-#        sumk = 0
-#        for i in xrange(new):
-#            sumk += aGraph.degree(i)
-        sumk = sum(aGraph.degree())
+        sumk = sum(aGraph.degree().values())
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / float(sumk)
         print new
