@@ -1,0 +1,21 @@
+{
+  "mainFile": "", 
+  "venv": "", 
+  "name": "nrt", 
+  "license": "", 
+  "url": "", 
+  "pythonPath": "pyton", 
+  "programParams": "", 
+  "supported-extensions": [
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".ini"
+  ], 
+  "project-type": "", 
+  "description": ""
+}
