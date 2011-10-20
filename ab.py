@@ -44,6 +44,11 @@ if __name__ == '__main__':
             nyu.append(nyutemp)
         r = r + 0.01
         
+#        graphics.make_graph(G)
+        graphics.make_probability_graphic(G)
+#        graphics.make_degree_histogram(G)
+        graphics.make_rank_distribution(G)
+        
     #Saving coefficients to file
 	fc = open('data/clustering.txt', 'w')
 	fsh = open('data/shortpath.txt', 'w')
@@ -57,17 +62,13 @@ if __name__ == '__main__':
         line = repr(sp) + "\n"
         fsh.write(line)
     fsh.close()
-#        graphics.make_graph(G)
-#        graphics.make_probability_graphic(G)
-#        graphics.make_degree_histogram(G)
-#        graphics.make_rank_distribution(G)
 
     graphics.make_nyu_graphic(nyu, rlist)
     graphics.make_clustering_graphic(clustering, rfull)
     graphics.make_shortest_path_graphic(shortpath, rfull)
     graphics.make_assortativity_graphic(assortativity, rfull)
 
-    plt.show()
+#    plt.show()
 
 #    print nx.betweenness_centrality(G)
 #    print nx.info(G)

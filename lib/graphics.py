@@ -39,6 +39,9 @@ def make_probability_graphic(aGraph):
     """Make a probability graphic with log axes and
        outputting alpha p ~ k^(-a)
     """
+    #Fix
+    #histTemp -> G.probability
+    #interpolation line!
     fig = plt.figure()
     plt.title("Probability graph " + aGraph.name)
     plt.yscale('log')
@@ -47,30 +50,29 @@ def make_probability_graphic(aGraph):
     doubleNumberOfEdges = 2 * aGraph.number_of_edges()
     yi = []
     # p ~ k^(-a)
-    ai = []
+#    ai = []
     #iterator - degree for nodes with p probability
-    iterator = 0
+#    iterator = 0
     a = 0.0
     #Calculating probability and alpha
     for y in histTemp:
         p = float(y) / doubleNumberOfEdges
         yi.append(p)
-        if y > 0 and iterator > 1:
-            ai.append(math.log(1 / p, iterator))
-        iterator += 1
+#        if y > 0 and iterator > 1:
+#            ai.append(math.log(1 / p, iterator))
+#        iterator += 1
 
-    for i in ai:
-        a += i
-    a = a / len(ai)
+#    for i in ai:
+#        a += i
+#    a = a / len(ai)
 
     xi = range(len(yi))
 
     xi, yi = remove_zeros(yi)
     plt.plot(xi, yi, 'ro')
-    plt.xlim(0, len(xi))
     #Outputing alpha
-    text = "alpha= " + repr(a)
-    plt.text(1, 0.01, text)
+#    text = "alpha= " + repr(a)
+#    plt.text(1, 0.01, text)
 
 #    @fixme interpolate by logarithm
     #Interpolation line
@@ -82,14 +84,14 @@ def make_probability_graphic(aGraph):
 #        yitemp.append(math.exp(y))
 #    xi = xitemp
 #    yi = yitemp
-    func = calculation.calculate_interpolation_line(xi, yi)
-    yi = []
-    n = int(math.ceil(max(xi)) + 1)
-    for x in xrange(n):
-        yi.append(func[1] * x + func[2])
-    plt.plot(range(n), yi, 'k')
-    text = "Angle= " + repr(func[0])
-    plt.text(1, 0.02, text)
+#    func = calculation.calculate_interpolation_line(xi, yi)
+#    yi = []
+#    n = int(math.ceil(max(xi)) + 1)
+#    for x in xrange(n):
+#        yi.append(func[1] * x + func[2])
+#    plt.plot(range(n), yi, 'k')
+#    text = "Angle= " + repr(func[0])
+#    plt.text(1, 0.02, text)
     plt.xlabel("Degree of nodes")
     plt.ylabel("Probability P(k)")
     fname = "Graphics/probability/" + aGraph.name + ".png"
