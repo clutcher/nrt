@@ -24,6 +24,7 @@ if __name__ == '__main__':
     nyu = []
     clustering = []
     shortpath = []
+    assortativity = []
 
     G = nx.Graph()
 
@@ -33,6 +34,7 @@ if __name__ == '__main__':
         rfull.append(r)
         clustering.append(nx.average_clustering(G))
         shortpath.append(nx.average_shortest_path_length(G))
+        assortativity.append(nx.degree_assortativity(G))
         nyutemp = calculation.calculate_nyu(G)
         if (nyutemp != 0) and flag:
             rc = r
@@ -58,11 +60,12 @@ if __name__ == '__main__':
 #        graphics.make_degree_histogram(G)
 #        graphics.make_rank_distribution(G)
 
-#    graphics.make_nyu_graphic(nyu, rlist)
-#    graphics.make_clustering_graphic(clustering, rfull)
-#    graphics.make_shortest_path_graphic(shortpath, rfull)
+    graphics.make_nyu_graphic(nyu, rlist)
+    graphics.make_clustering_graphic(clustering, rfull)
+    graphics.make_shortest_path_graphic(shortpath, rfull)
+    graphics.make_assortativity_graphic(assortativity, rfull)
 
-#    plt.show()
+    plt.show()
 
 #    print nx.betweenness_centrality(G)
 #    print nx.info(G)

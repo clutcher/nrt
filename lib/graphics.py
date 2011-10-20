@@ -174,3 +174,19 @@ def make_shortest_path_graphic(shortpath, r):
     plt.ylabel("Average shortest path")
     fig.savefig("Graphics/shortpath.png")
     return fig
+    
+    
+def make_assortativity_graphic(assortativity, r):
+    """Graphic of assortativity distribution from r"""
+    if len(assortativity) != len(r):
+        print "Len of assortativity or r is invalid!"
+        return 0
+    fig = plt.figure()
+    plt.title("Assortativity distribution")
+    plt.plot(r, assortativity, 'ro')
+#    plt.yscale('log')
+#    plt.xscale('log')
+    plt.xlabel("r")
+    plt.ylabel("Assortativity")
+    fig.savefig("Graphics/assortativity.png")
+    return fig
