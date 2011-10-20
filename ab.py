@@ -43,18 +43,20 @@ if __name__ == '__main__':
             rlist.append(r - rc)
             nyu.append(nyutemp)
         r = r + 0.01
-
-	fc = open('data\clustering.txt', 'w')
-	fsh = open('data\shortpath.txt', 'w')
+        
+    #Saving coefficients to file
+	fc = open('data/clustering.txt', 'w')
+	fsh = open('data/shortpath.txt', 'w')
 
     for cl in clustering:
         line = repr(cl) + "\n"
         fc.write(line)
+    fc.close()
 
     for sp in shortpath:
-        line = repr(cl) + "\n"
+        line = repr(sp) + "\n"
         fsh.write(line)
-
+    fsh.close()
 #        graphics.make_graph(G)
 #        graphics.make_probability_graphic(G)
 #        graphics.make_degree_histogram(G)
