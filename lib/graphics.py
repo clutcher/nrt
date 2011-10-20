@@ -31,11 +31,6 @@ def make_graph(aGraph):
     nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
         node_size=[30 * float(aGraph.degree(v)) for v in aGraph],
         node_color=[float(aGraph.degree(v)) for v in aGraph])
-    # Adjust the plot limits
-    xmax = 1.02 * max(xx for xx, yy in pos.values())
-    ymax = 1.02 * max(yy for xx, yy in pos.values())
-    plt.xlim(0, xmax)
-    plt.ylim(0, ymax)
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
 
@@ -109,7 +104,6 @@ def make_degree_histogram(aGraph):
     yi = nx.degree_histogram(aGraph)
     xi = range(len(yi))
     plt.bar(xi, yi, align="center")
-    plt.xlim(0, len(xi))
     plt.xlabel("Degree of node")
     plt.ylabel("Number of nodes with x degree")
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
@@ -141,9 +135,7 @@ def make_nyu_graphic(nyu, r):
         return 0
     fig = plt.figure()
     plt.title("Nyu distribution")
-    xi = r
-    yi = nyu
-    plt.plot(xi, yi, 'ro')
+    plt.plot(r, nyu, 'ro')
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel("r")
@@ -159,9 +151,7 @@ def make_clustering_graphic(cluster, r):
         return 0
     fig = plt.figure()
     plt.title("Average clustering distribution")
-    xi = r
-    yi = cluster
-    plt.plot(xi, yi, 'ro')
+    plt.plot(r, cluster, 'ro')
 #    plt.yscale('log')
 #    plt.xscale('log')
     plt.xlabel("r")
@@ -177,9 +167,7 @@ def make_shortest_path_graphic(shortpath, r):
         return 0
     fig = plt.figure()
     plt.title("Average shortest path distribution")
-    xi = r
-    yi = shortpath
-    plt.plot(xi, yi, 'ro')
+    plt.plot(r, shortpath, 'ro')
 #    plt.yscale('log')
 #    plt.xscale('log')
     plt.xlabel("r")

@@ -42,14 +42,25 @@ if __name__ == '__main__':
             nyu.append(nyutemp)
         r = r + 0.01
 
-#        graphics.make_graph(G)
-        graphics.make_probability_graphic(G)
-        graphics.make_degree_histogram(G)
-        graphics.make_rank_distribution(G)
+	fc = open('data\clustering.txt', 'w')
+	fsh = open('data\shortpath.txt', 'w')
 
-    graphics.make_nyu_graphic(nyu, rlist)
-    graphics.make_clustering_graphic(clustering, rfull)
-    graphics.make_shortest_path_graphic(shortpath, rfull)
+    for cl in clustering:
+        line = repr(cl) + "\n"
+        fc.write(line)
+
+    for sp in shortpath:
+        line = repr(cl) + "\n"
+        fsh.write(line)
+
+#        graphics.make_graph(G)
+#        graphics.make_probability_graphic(G)
+#        graphics.make_degree_histogram(G)
+#        graphics.make_rank_distribution(G)
+
+#    graphics.make_nyu_graphic(nyu, rlist)
+#    graphics.make_clustering_graphic(clustering, rfull)
+#    graphics.make_shortest_path_graphic(shortpath, rfull)
 
 #    plt.show()
 
