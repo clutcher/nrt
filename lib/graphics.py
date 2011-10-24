@@ -118,11 +118,11 @@ def make_coeficient_graphic(r, coef, name):
     plt.plot(r, yi, 'k')
 
     text = "t= " + repr(t)
-    plt.text(1, 0.01, text)
+    plt.text(0.01, 0.01, text)
 
     plt.yscale('log')
     plt.xscale('log')
-    plt.xlabel("r")
+    plt.xlabel("r-rc")
     plt.ylabel(name)
     fname = "Graphics/" + name + ".png"
     fig.savefig(fname)

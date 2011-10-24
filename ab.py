@@ -16,8 +16,6 @@ if __name__ == '__main__':
     rc = 0
     #rlist - list of r, where r > rc
     rlist = []
-    #rfull - list of  r
-    rfull = []
     #flag - finding first rc
     flag = 1
 
@@ -31,8 +29,6 @@ if __name__ == '__main__':
     #Generate many networks for making nyu graphic
     while r < 1:
         G = generator.evolveN(1000, 20, r, 3)
-        rfull.append(r)
-
         nyutemp = calculation.calculate_nyu(G)
         if (nyutemp != 0) and flag:
             rc = r
@@ -40,12 +36,13 @@ if __name__ == '__main__':
         if rc != 0:
             clustering.append(nx.average_clustering(G))
             shortpath.append(nx.average_shortest_path_length(G))
-            assortativity.append(nx.degree_assortativity(G))
-            rlist.append(r - rc + 0.01)
+            assortativity.append(abs(nx.degree_assortativity(G)))
+            #To avoid log 0
+            rlist.append(r - rc + 0.001)
             nyu.append(nyutemp)
         r = r + 0.01
 #        graphics.make_graph(G)
-        graphics.make_probability_graphic(G)
+#        graphics.make_probability_graphic(G)
 #        graphics.make_degree_histogram(G)
 #        graphics.make_rank_distribution(G)
 
@@ -66,7 +63,7 @@ if __name__ == '__main__':
     graphics.make_coeficient_graphic(rlist, nyu, "nyu")
     graphics.make_coeficient_graphic(rlist, clustering, "clustering")
     graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
-#    graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
+    graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
 
 #    plt.show()
 
