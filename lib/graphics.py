@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Graphics drawing"""
 
+import os
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -30,6 +31,10 @@ def make_graph(aGraph):
     nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
         node_size=[30 * float(aGraph.degree(v)) for v in aGraph],
         node_color=[float(aGraph.degree(v)) for v in aGraph])
+    try:
+        os.makedirs('Graphics/graph')
+    except OSError:
+        pass
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
 
@@ -64,6 +69,10 @@ def make_probability_graphic(aGraph):
     plt.text(1, 0.01, text)
     plt.xlabel("Degree of nodes")
     plt.ylabel("Probability P(k)")
+    try:
+        os.makedirs('Graphics/probability')
+    except OSError:
+        pass
     fname = "Graphics/probability/" + aGraph.name + ".png"
     plt.savefig(fname)
     return fig
@@ -79,6 +88,10 @@ def make_degree_histogram(aGraph):
     plt.xlim(0, len(xi))
     plt.xlabel("Degree of node")
     plt.ylabel("Number of nodes with x degree")
+    try:
+        os.makedirs('Graphics/degree_hist')
+    except OSError:
+        pass
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
     plt.savefig(fname)
     return fig
@@ -96,6 +109,10 @@ def make_rank_distribution(aGraph):
     plt.xscale('log')
     plt.xlabel("Node")
     plt.ylabel("Degree")
+    try:
+        os.makedirs('Graphics/rank')
+    except OSError:
+        pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
     return fig
@@ -124,6 +141,10 @@ def make_coeficient_graphic(r, coef, name):
     plt.xscale('log')
     plt.xlabel("r-rc")
     plt.ylabel(name)
+    try:
+        os.makedirs('Graphics')
+    except OSError:
+        pass
     fname = "Graphics/" + name + ".png"
     fig.savefig(fname)
     return fig

@@ -42,9 +42,9 @@ if __name__ == '__main__':
             nyu.append(nyutemp)
         r = r + 0.01
 #        graphics.make_graph(G)
-#        graphics.make_probability_graphic(G)
-#        graphics.make_degree_histogram(G)
-#        graphics.make_rank_distribution(G)
+        graphics.make_probability_graphic(G)
+        graphics.make_degree_histogram(G)
+        graphics.make_rank_distribution(G)
 
     #Saving coefficients to file
     fc = open('data/clustering.txt', 'w')
