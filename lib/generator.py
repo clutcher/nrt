@@ -23,45 +23,42 @@ def evolveN(m, m0, r, n):
     #Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
-    name = "ba_m=" + repr(m) + "_r=" + repr(r) + "_n=" + repr(n)
+    name = "ba_m=" + repr(m) + "_r=" + repr(r) + "_n=" + repr(r)
     aGraph.name = name
 
     #Add first n nodes
-    for new in xrange(0, m0, 2):
+    for new in xrange(m0):
         aGraph.add_node(new)
-        n1 = new + 1
-        aGraph.add_node(n1)
-        aGraph.add_edge(new, n1)
+
+    #Adding edges for first n nodes (circle)
+    for new in xrange(1, m0):
+        aGraph.add_edge(new - 1, new)
+#    #Make circle
+#    aGraph.add_edge(0,m0-1)
 
     #Calculating probability for first m0 nodes
-    sumk = float(aGraph.number_of_edges() * 2)
+    sumk = sum(aGraph.degree().values())
     for k in xrange(m0):
-        aGraph.probability[k] = aGraph.degree(k) / sumk
+        aGraph.probability[k] = aGraph.degree(k) / float(sumk)
 
     #Generating new nodes
     avdegr = calculate_average_degree(aGraph)
-    #Normalizing r = r * average_degree
-    rnorm = r * avdegr
     for new in xrange(m0, m):
         #Add new node
         aGraph.add_node(new)
-        newdegr = 0
-        n1 = new - 1
-        while newdegr < n:
-            for i in xrange(n1):
+        while aGraph.degree(new) < n:
+            for i in xrange(new - 1):
                 #Add degrees
                 if (random.random() <= aGraph.probability[i]) \
-                and (aGraph.degree(i) >= rnorm):
+                    and (aGraph.degree(i) >= r * avdegr):
                     aGraph.add_edge(i, new)
-                    newdegr += 1
                     avdegr = calculate_average_degree(aGraph)
-                    rnorm = r * avdegr
-                    if newdegr == n:
+                    if aGraph.degree(new) == n:
                         break
 
         #Recalculating probability
-        sumk = float(aGraph.number_of_edges() * 2)
+        sumk = sum(aGraph.degree().values())
         for k in xrange(new):
-            aGraph.probability[k] = aGraph.degree(k) / sumk
+            aGraph.probability[k] = aGraph.degree(k) / float(sumk)
         print new
     return aGraph

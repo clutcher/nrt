@@ -21,9 +21,9 @@ def calculate_nyu(aGraph):
     return nyu
 
 
-def calculate_interpolation_line(x, y):
-    """Using least square method.
-        Returning angle of line and y = kx + b
+def calculate_linear_least_square(x, y):
+    """Using least square method for linear function.
+        Returning coeficient k,b of y = kx + b
     """
     if len(x) != len(y):
         return "Length of x and y are not valid!"
@@ -39,5 +39,15 @@ def calculate_interpolation_line(x, y):
         sumy += y[i]
     k = (sumxy * n - sumx * sumy) / (sumx2 * n - sumx * sumx)
     b = (sumx2 * sumy - sumx * sumxy) / (sumx2 * n - sumx * sumx)
-    angle = math.degrees(k)
-    return angle, k, b
+    return k, b
+
+
+def calculate_degree_least_square(x, y):
+    """Using least square method for degree function.
+        Returning coeficient c, t of y = c*x^t.
+    """
+    xi = [math.log(xt) for xt in x]
+    yi = [math.log(yt) for yt in y]
+    t, b = calculate_linear_least_square(xi, yi)
+    c = math.e ** b
+    return c, t

@@ -3,21 +3,20 @@
 
 import networkx as nx
 import matplotlib.pyplot as plt
-import math
 
 import calculation
 
 
-def remove_zeros(yi):
+def remove_zeros(xi, yi):
     """Deleting zero y from x"""
     xitemp = []
     yitemp = []
     iterator = 0
     for y in yi:
-        iterator += 1
         if y != 0:
             yitemp.append(y)
-            xitemp.append(iterator)
+            xitemp.append(xi[iterator])
+            iterator += 1
         else:
             iterator += 1
     return xitemp, yitemp
@@ -39,59 +38,30 @@ def make_probability_graphic(aGraph):
     """Make a probability graphic with log axes and
        outputting alpha p ~ k^(-a)
     """
-    #Fix
-    #histTemp -> G.probability
-    #interpolation line!
     fig = plt.figure()
     plt.title("Probability graph " + aGraph.name)
     plt.yscale('log')
     plt.xscale('log')
     histTemp = nx.degree_histogram(aGraph)
-    doubleNumberOfEdges = 2 * aGraph.number_of_edges()
+    sumk = sum(aGraph.degree().values())
     yi = []
-    # p ~ k^(-a)
-#    ai = []
-    #iterator - degree for nodes with p probability
-#    iterator = 0
-    a = 0.0
-    #Calculating probability and alpha
+    #Calculating probability
     for y in histTemp:
-        p = float(y) / doubleNumberOfEdges
+        p = float(y) / sumk
         yi.append(p)
-#        if y > 0 and iterator > 1:
-#            ai.append(math.log(1 / p, iterator))
-#        iterator += 1
-
-#    for i in ai:
-#        a += i
-#    a = a / len(ai)
-
     xi = range(len(yi))
-
-    xi, yi = remove_zeros(yi)
+    #Removing zero points
+    xi, yi = remove_zeros(xi, yi)
     plt.plot(xi, yi, 'ro')
-    #Outputing alpha
-#    text = "alpha= " + repr(a)
-#    plt.text(1, 0.01, text)
+    #Making approximation line
+    c, t = calculation.calculate_degree_least_square(xi, yi)
+    yi = []
+    for x in xi:
+        yi.append(c * (x ** t))
+    plt.plot(xi, yi, 'k')
 
-#    @fixme interpolate by logarithm
-    #Interpolation line
-#    xitemp = []
-#    yitemp = []
-#    for x in xi:
-#        xitemp.append(math.exp(x))
-#    for y in yi:
-#        yitemp.append(math.exp(y))
-#    xi = xitemp
-#    yi = yitemp
-#    func = calculation.calculate_interpolation_line(xi, yi)
-#    yi = []
-#    n = int(math.ceil(max(xi)) + 1)
-#    for x in xrange(n):
-#        yi.append(func[1] * x + func[2])
-#    plt.plot(range(n), yi, 'k')
-#    text = "Angle= " + repr(func[0])
-#    plt.text(1, 0.02, text)
+    text = "t= " + repr(t)
+    plt.text(1, 0.01, text)
     plt.xlabel("Degree of nodes")
     plt.ylabel("Probability P(k)")
     fname = "Graphics/probability/" + aGraph.name + ".png"
@@ -106,6 +76,7 @@ def make_degree_histogram(aGraph):
     yi = nx.degree_histogram(aGraph)
     xi = range(len(yi))
     plt.bar(xi, yi, align="center")
+    plt.xlim(0, len(xi))
     plt.xlabel("Degree of node")
     plt.ylabel("Number of nodes with x degree")
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
@@ -130,65 +101,29 @@ def make_rank_distribution(aGraph):
     return fig
 
 
-def make_nyu_graphic(nyu, r):
-    """Graphic of nyu distribution from r"""
-    if len(nyu) != len(r):
-        print "Len of nyu or r is invalid!"
+def make_coeficient_graphic(r, coef, name):
+    """Graphic of coefficient distribution from r-rc in log axes"""
+    if len(coef) != len(r):
+        print "Length of coeficient or r is invalid!"
         return 0
     fig = plt.figure()
-    plt.title("Nyu distribution")
-    plt.plot(r, nyu, 'ro')
+    title = str(name) + " distribution"
+    plt.title(title)
+    plt.plot(r, coef, 'ro')
+    #Making approximation line
+    c, t = calculation.calculate_degree_least_square(r, coef)
+    yi = []
+    for x in r:
+        yi.append(c * (x ** t))
+    plt.plot(r, yi, 'k')
+
+    text = "t= " + repr(t)
+    plt.text(1, 0.01, text)
+
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel("r")
-    plt.ylabel("Nyu")
-    fig.savefig("Graphics/nyu.png")
-    return fig
-
-
-def make_clustering_graphic(cluster, r):
-    """Graphic of cluster distribution from r"""
-    if len(cluster) != len(r):
-        print "Len of cluster or r is invalid!"
-        return 0
-    fig = plt.figure()
-    plt.title("Average clustering distribution")
-    plt.plot(r, cluster, 'ro')
-#    plt.yscale('log')
-#    plt.xscale('log')
-    plt.xlabel("r")
-    plt.ylabel("Average clustering")
-    fig.savefig("Graphics/cluster.png")
-    return fig
-
-
-def make_shortest_path_graphic(shortpath, r):
-    """Graphic of average shortest path distribution from r"""
-    if len(shortpath) != len(r):
-        print "Len of shortest path or r is invalid!"
-        return 0
-    fig = plt.figure()
-    plt.title("Average shortest path distribution")
-    plt.plot(r, shortpath, 'ro')
-#    plt.yscale('log')
-#    plt.xscale('log')
-    plt.xlabel("r")
-    plt.ylabel("Average shortest path")
-    fig.savefig("Graphics/shortpath.png")
-    return fig
-    
-    
-def make_assortativity_graphic(assortativity, r):
-    """Graphic of assortativity distribution from r"""
-    if len(assortativity) != len(r):
-        print "Len of assortativity or r is invalid!"
-        return 0
-    fig = plt.figure()
-    plt.title("Assortativity distribution")
-    plt.plot(r, assortativity, 'ro')
-#    plt.yscale('log')
-#    plt.xscale('log')
-    plt.xlabel("r")
-    plt.ylabel("Assortativity")
-    fig.savefig("Graphics/assortativity.png")
+    plt.ylabel(name)
+    fname = "Graphics/" + name + ".png"
+    fig.savefig(fname)
     return fig
