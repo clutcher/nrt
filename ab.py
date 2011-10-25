@@ -2,7 +2,8 @@
 """Albert-Barabasi model"""
 
 import networkx as nx
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+import time
 
 import lib.generator as generator
 import lib.graphics as graphics
@@ -25,7 +26,7 @@ if __name__ == '__main__':
     assortativity = []
 
     G = nx.Graph()
-
+    startTime = time.time()
     #Generate many networks for making nyu graphic
     while r < 1:
         G = generator.evolveN(1000, 20, r, 3)
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         graphics.make_probability_graphic(G)
         graphics.make_degree_histogram(G)
         graphics.make_rank_distribution(G)
-
+    print time.time() - startTime
     #Saving coefficients to file
     fc = open('data/clustering.txt', 'w')
     fsh = open('data/shortpath.txt', 'w')

@@ -3,9 +3,9 @@
 
 import os
 import networkx as nx
-import matplotlib.pyplot as plt
 
 import calculation
+# matplotlib is imported localy to avoid magic crashes in Windows
 
 
 def remove_zeros(xi, yi):
@@ -25,7 +25,9 @@ def remove_zeros(xi, yi):
 
 def make_graph(aGraph):
     """Make graph of network"""
-    plt.figure()
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
     plt.title("Network graph " + aGraph.name)
     pos = nx.graphviz_layout(aGraph, prog="dot", root=0)
     nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
@@ -37,12 +39,15 @@ def make_graph(aGraph):
         pass
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close(fig)
 
 
 def make_probability_graphic(aGraph):
     """Make a probability graphic with log axes and
        outputting alpha p ~ k^(-a)
     """
+    import matplotlib.pyplot as plt
+
     fig = plt.figure()
     plt.title("Probability graph " + aGraph.name)
     plt.yscale('log')
@@ -75,11 +80,13 @@ def make_probability_graphic(aGraph):
         pass
     fname = "Graphics/probability/" + aGraph.name + ".png"
     plt.savefig(fname)
-    return fig
+    plt.close(fig)
 
 
 def make_degree_histogram(aGraph):
     """Make a histogram of degrees"""
+    import matplotlib.pyplot as plt
+
     fig = plt.figure()
     plt.title("Degree histogram " + aGraph.name)
     yi = nx.degree_histogram(aGraph)
@@ -94,11 +101,13 @@ def make_degree_histogram(aGraph):
         pass
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
     plt.savefig(fname)
-    return fig
+    plt.close(fig)
 
 
 def make_rank_distribution(aGraph):
     """Make rank distribution by degree graphic"""
+    import matplotlib.pyplot as plt
+
     fig = plt.figure()
     plt.title("Rank distribution")
     yi = list(aGraph.degree().values())
@@ -115,11 +124,13 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
-    return fig
+    plt.close(fig)
 
 
 def make_coeficient_graphic(r, coef, name):
     """Graphic of coefficient distribution from r-rc in log axes"""
+    import matplotlib.pyplot as plt
+
     if len(coef) != len(r):
         print "Length of coeficient or r is invalid!"
         return 0
@@ -147,4 +158,4 @@ def make_coeficient_graphic(r, coef, name):
         pass
     fname = "Graphics/" + name + ".png"
     fig.savefig(fname)
-    return fig
+    plt.close(fig)

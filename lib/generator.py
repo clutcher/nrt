@@ -26,39 +26,41 @@ def evolveN(m, m0, r, n):
     name = "ba_m=" + repr(m) + "_r=" + repr(r) + "_n=" + repr(n)
     aGraph.name = name
 
-    #Add first n nodes
+    #Add first m0 nodes
     for new in xrange(m0):
         aGraph.add_node(new)
 
     #Adding edges for first n nodes (circle)
     for new in xrange(1, m0):
         aGraph.add_edge(new - 1, new)
-#    #Make circle
-#    aGraph.add_edge(0,m0-1)
 
     #Calculating probability for first m0 nodes
-    sumk = sum(aGraph.degree().values())
+    sumk = float(aGraph.number_of_edges() * 2)
     for k in xrange(m0):
-        aGraph.probability[k] = aGraph.degree(k) / float(sumk)
+        aGraph.probability[k] = aGraph.degree(k) / sumk
 
     #Generating new nodes
     avdegr = calculate_average_degree(aGraph)
+    #Normalizing r = r * average_degree
+    rnorm = r * avdegr
     for new in xrange(m0, m):
         #Add new node
         aGraph.add_node(new)
+        n1 = new - 1
         while aGraph.degree(new) < n:
-            for i in xrange(new - 1):
+            for i in xrange(n1):
                 #Add degrees
                 if (random.random() <= aGraph.probability[i]) \
-                    and (aGraph.degree(i) >= r * avdegr):
+                and (aGraph.degree(i) >= rnorm):
                     aGraph.add_edge(i, new)
-                    avdegr = calculate_average_degree(aGraph)
                     if aGraph.degree(new) == n:
                         break
+        avdegr = calculate_average_degree(aGraph)
+        rnorm = r * avdegr
 
         #Recalculating probability
-        sumk = sum(aGraph.degree().values())
+        sumk = float(aGraph.number_of_edges() * 2)
         for k in xrange(new):
-            aGraph.probability[k] = aGraph.degree(k) / float(sumk)
+            aGraph.probability[k] = aGraph.degree(k) / sumk
         print new
     return aGraph
