@@ -83,6 +83,29 @@ def make_probability_graphic(aGraph):
     plt.close(fig)
 
 
+def make_betweenness_graphic(aGraph):
+    """ Make betweenness graphic
+    """
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
+    plt.title("Betweenness graph " + aGraph.name)
+    plt.yscale('log')
+    plt.xscale('log')
+    yi = nx.betweenness_centrality(aGraph).values()
+    xi = aGraph.nodes()
+    plt.plot(xi, yi, 'ro')
+    plt.xlabel("Node")
+    plt.ylabel("Betweenness")
+    try:
+        os.makedirs('Graphics/betweenness')
+    except OSError:
+        pass
+    fname = "Graphics/betweenness/" + aGraph.name + ".png"
+    plt.savefig(fname)
+    plt.close(fig)
+
+
 def make_degree_histogram(aGraph):
     """Make a histogram of degrees"""
     import matplotlib.pyplot as plt

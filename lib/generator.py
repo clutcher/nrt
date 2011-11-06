@@ -27,11 +27,9 @@ def evolveN(m, m0, r, n):
     aGraph.name = name
 
     #Add first m0 nodes
-    for new in xrange(m0):
-        aGraph.add_node(new)
-
-    #Adding edges for first n nodes (circle)
+    aGraph.add_node(0)
     for new in xrange(1, m0):
+        aGraph.add_node(new)
         aGraph.add_edge(new - 1, new)
 
     #Calculating probability for first m0 nodes
