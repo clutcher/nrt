@@ -13,8 +13,9 @@ def calculate_average_degree(aGraph):
     return avdegree
 
 
-def evolveN(m, m0, r, n):
-    """Adding nodes
+def evolveBA(m, m0, r, n):
+    """Barabasi-Albert model generator
+        Adding nodes
         m - number of nodes to evolve
         m0 - number of initial nodes
         r - r(k)
@@ -61,4 +62,67 @@ def evolveN(m, m0, r, n):
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / sumk
         print new
+    return aGraph
+
+
+def evolveFlower(x, y, n):
+    """(x,y) flower network generator
+    """
+    if x < 1 or y < 2 or n < 3:
+        return "Error in input data"
+    #Initializing graph
+    aGraph = nx.Graph()
+    aGraph.probability = {}
+    name = "flower_x=" + repr(x) + "_y=" + repr(y)
+    aGraph.name = name
+
+    #Add first 2 nodes and 1 edge
+    aGraph.add_node(0)
+    aGraph.add_node(1)
+    aGraph.add_edge(0, 1)
+
+    print 0
+
+    #Generating new nodes
+    for iterations in xrange(1, n):
+        #List of edges
+        edges = aGraph.edges()
+        for edge in edges:
+            #Transforming one edge
+            aGraph.remove_edge(edge[0], edge[1])
+
+            #len(aGraph) calculate length from 1
+            #we calculate nodes from 0
+
+            #Adding line x
+
+            length = len(aGraph)
+            #First node at line x
+            aGraph.add_node(length)
+            aGraph.add_edge(edge[0], length)
+
+            #Rest nodes at line x
+            if x > 1:
+                for new in xrange(length, length + x - 1):
+                    aGraph.add_node(new)
+                    aGraph.add_edge(new - 1, new)
+            #Last edge
+            aGraph.add_edge(edge[1], len(aGraph) - 1)
+
+            #Adding line y
+
+            length = len(aGraph)
+            #First node at line y
+            aGraph.add_node(length)
+            aGraph.add_edge(edge[0], length)
+
+            #Rest nodes at line y
+            if y > 1:
+                for new in xrange(length, length + y - 1):
+                    aGraph.add_node(new)
+                    aGraph.add_edge(new - 1, new)
+            #Last edge
+            aGraph.add_edge(edge[1], len(aGraph) - 1)
+        print iterations
+    print 'end'
     return aGraph

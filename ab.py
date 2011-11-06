@@ -25,11 +25,10 @@ if __name__ == '__main__':
     shortpath = []
     assortativity = []
 
-    G = nx.Graph()
     startTime = time.time()
     #Generate many networks for making nyu graphic
     while r < 1:
-        G = generator.evolveN(1000, 20, r, 3)
+        G = generator.evolveBA(1000, 20, r, 3)
         nyutemp = calculation.calculate_nyu(G)
         if (nyutemp != 0) and flag:
             rc = r
