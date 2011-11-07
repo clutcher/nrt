@@ -68,7 +68,7 @@ def evolveBA(m, m0, r, n):
 def evolveFlower(x, y, n):
     """(x,y) flower network generator
     """
-    if x < 1 or y < 2 or n < 3:
+    if x < 1 or y < 2 or n < 2:
         return "Error in input data"
     #Initializing graph
     aGraph = nx.Graph()
@@ -103,7 +103,7 @@ def evolveFlower(x, y, n):
 
             #Rest nodes at line x
             if x > 1:
-                for new in xrange(length, length + x - 1):
+                for new in xrange(length + 1, length + x - 1):
                     aGraph.add_node(new)
                     aGraph.add_edge(new - 1, new)
             #Last edge
@@ -118,7 +118,7 @@ def evolveFlower(x, y, n):
 
             #Rest nodes at line y
             if y > 1:
-                for new in xrange(length, length + y - 1):
+                for new in xrange(length + 1, length + y - 1):
                     aGraph.add_node(new)
                     aGraph.add_edge(new - 1, new)
             #Last edge
