@@ -64,6 +64,7 @@ def make_probability_graphic(aGraph):
     xi, yi = remove_zeros(xi, yi)
     plt.plot(xi, yi, 'ro')
     #Making approximation line
+    print xi, yi
     c, t = calculation.calculate_degree_least_square(xi, yi)
     yi = []
     for x in xi:
@@ -147,6 +148,7 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
+    return fig
     plt.close(fig)
 
 
