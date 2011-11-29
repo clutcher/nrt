@@ -64,7 +64,6 @@ def make_probability_graphic(aGraph):
     xi, yi = remove_zeros(xi, yi)
     plt.plot(xi, yi, 'ro')
     #Making approximation line
-    print xi, yi
     c, t = calculation.calculate_degree_least_square(xi, yi)
     yi = []
     for x in xi:

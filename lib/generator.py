@@ -13,18 +13,24 @@ def calculate_average_degree(aGraph):
     return avdegree
 
 
-def evolveBA(m, m0, r, n):
+def evolveBA(m, m0, r, n, di, p):
     """Barabasi-Albert model generator
         Adding nodes
         m - number of nodes to evolve
         m0 - number of initial nodes
         r - r(k)
         n - number of edges of each new node
+        di - 1 -make directed graph, 0 - usual raph
+        p - probabilty of not concidering parametr r
     """
     #Initializing graph
-    aGraph = nx.Graph()
+    if di:
+        aGraph = nx.DiGraph()
+    else:
+        aGraph = nx.Graph()
     aGraph.probability = {}
-    name = "ba_m=" + repr(m) + "_r=" + repr(r) + "_n=" + repr(n)
+    name = "ba_m=" + repr(m) + "_r=" + repr(r) + \
+    "_n=" + repr(n) + "_p=" + repr(p)
     aGraph.name = name
 
     #Add first m0 nodes
@@ -32,7 +38,6 @@ def evolveBA(m, m0, r, n):
     for new in xrange(1, m0):
         aGraph.add_node(new)
         aGraph.add_edge(new - 1, new)
-
     #Calculating probability for first m0 nodes
     sumk = float(aGraph.number_of_edges() * 2)
     for k in xrange(m0):
@@ -50,8 +55,8 @@ def evolveBA(m, m0, r, n):
             for i in xrange(n1):
                 #Add degrees
                 if (random.random() <= aGraph.probability[i]) \
-                and (aGraph.degree(i) >= rnorm):
-                    aGraph.add_edge(i, new)
+                and ((aGraph.degree(i) >= rnorm) or random.random() <= p):
+                    aGraph.add_edge(new, i)
                     if aGraph.degree(new) == n:
                         break
         avdegr = calculate_average_degree(aGraph)

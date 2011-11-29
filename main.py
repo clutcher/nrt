@@ -28,32 +28,26 @@ if __name__ == '__main__':
     startTime = time.time()
     #Generate many networks for making nyu graphic
     while r < 1:
-#        G = generator.evolveBA(1000, 20, r, 3)
+        G = generator.evolveBA(1000, 20, r, 3, 0, 0)
+#        G = generator.evolveFlower(2, 2, 7, r)
 
-        G = generator.evolveFlower(2, 2, 7, r)
-        clustering.append(nx.average_clustering(G))
-        shortpath.append(nx.average_shortest_path_length(G))
-        assortativity.append(abs(nx.degree_assortativity(G)))
-        #To avoid log 0
-        rlist.append(r - rc + 0.001)
-
-#        nyutemp = calculation.calculate_nyu(G)
-#        if (nyutemp != 0) and flag:
-#            rc = r
-#            flag = 0
-#        if rc != 0:
-#            clustering.append(nx.average_clustering(G))
-#            shortpath.append(nx.average_shortest_path_length(G))
-#            assortativity.append(abs(nx.degree_assortativity(G)))
-#            #To avoid log 0
-#            rlist.append(r - rc + 0.001)
-#            nyu.append(nyutemp)
+        nyutemp = calculation.calculate_nyu(G)
+        if (nyutemp != 0) and flag:
+            rc = r
+            flag = 0
+        if rc != 0:
+            clustering.append(nx.average_clustering(G))
+            shortpath.append(nx.average_shortest_path_length(G))
+            assortativity.append(abs(nx.degree_assortativity(G)))
+            #To avoid log 0
+            rlist.append(r - rc + 0.001)
+            nyu.append(nyutemp)
         r = r + 0.01
 #        graphics.make_graph(G)
-#        graphics.make_betweenness_graphic(G)
-#        graphics.make_probability_graphic(G)
-#        graphics.make_degree_histogram(G)
-#        graphics.make_rank_distribution(G)
+        graphics.make_betweenness_graphic(G)
+        graphics.make_probability_graphic(G)
+        graphics.make_degree_histogram(G)
+        graphics.make_rank_distribution(G)
     print time.time() - startTime
     #Saving coefficients to file
     fc = open('data/clustering.txt', 'w')
@@ -70,8 +64,7 @@ if __name__ == '__main__':
     fsh.close()
 
     graphics.make_coeficient_graphic(rlist, nyu, "nyu")
-    print clustering
-#    graphics.make_coeficient_graphic(rlist, clustering, "clustering")
+    graphics.make_coeficient_graphic(rlist, clustering, "clustering")
     graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
     graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
 
