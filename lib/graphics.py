@@ -39,7 +39,8 @@ def make_graph(aGraph):
         pass
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
-    plt.close(fig)
+#    plt.close(fig)
+    return fig
 
 
 def make_probability_graphic(aGraph):
