@@ -30,13 +30,13 @@ if __name__ == '__main__':
     shortpathT = []
     assortativityT = []
 
-    numberOfRealization = 100
+    numberOfRealization = 30
     network = 'BA'
     if network == 'BA':
-        for i in xrange(numberOfRealization):
-            #Generate many networks for making nyu graphic
-            while r < 1:
-                G = generator.evolveBA(1000, 20, r, 3, 0, 0)
+        #Generate many networks for making nyu graphic
+        while r < 1:
+            for i in xrange(numberOfRealization):
+                G = generator.evolveBA(2000, 20, r, 3, 0, 0)
 
                 nyutemp = calculation.calculate_nyu(G)
                 if (nyutemp != 0) and flag:
@@ -48,36 +48,36 @@ if __name__ == '__main__':
                     assortativityT.append(abs(nx.degree_assortativity(G)))
                     nyuT.append(nyutemp)
 
-        #Finding average parameters
+            #Finding average parameters
+            if rc != 0:
+                sum = 0.0
+                for temp in clusteringT:
+                    sum += temp
+                sum = sum / (len(clusteringT) + 1)
+                clustering.append(sum)
 
-        sum = 0.0
-        for temp in clusteringT:
-            sum += temp
-        sum = sum / (len(clusteringT) + 1)
-        clustering.append(sum)
+                sum = 0.0
+                for temp in shortpathT:
+                    sum += temp
+                sum = sum / (len(shortpathT) + 1)
+                shortpath.append(sum)
 
-        sum = 0.0
-        for temp in shortpathT:
-            sum += temp
-        sum = sum / (len(shortpathT) + 1)
-        shortpath.append(sum)
+                sum = 0.0
+                for temp in assortativityT:
+                    sum += temp
+                sum = sum / (len(assortativityT) + 1)
+                assortativity.append(sum)
 
+                sum = 0.0
+                for temp in nyuT:
+                    sum += temp
+                sum = sum / (len(nyuT) + 1)
+                nyu.append(sum)
 
-        sum = 0.0
-        for temp in assortativityT:
-            sum += temp
-        sum = sum / (len(assortativityT) + 1)
-        assortativity.append(sum)
-
-        sum = 0.0
-        for temp in nyuT:
-            sum += temp
-        sum = sum / (len(nyuT) + 1)
-        nyu.append(sum)
-
-        #Adding 0.001 to avoid log 0
-        rlist.append(r - rc + 0.001)
-        r = r + 0.01
+                #Adding 0.001 to avoid log 0
+                print r
+                rlist.append(r - rc + 0.001)
+            r = r + 0.01
 
         #Network graphics
 #        graphics.make_graph(G)

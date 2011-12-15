@@ -158,6 +158,7 @@ def make_coeficient_graphic(r, coef, name):
 
     if len(coef) != len(r):
         print "Length of coeficient or r is invalid!"
+        print len(coef), len(r)
         return 0
     fig = plt.figure()
     title = str(name) + " distribution"
@@ -171,7 +172,7 @@ def make_coeficient_graphic(r, coef, name):
     plt.plot(r, yi, 'k')
 
     text = "t= " + repr(t)
-    plt.text(0.01, 0.01, text)
+    plt.text(1, 1, text)
 
     plt.yscale('log')
     plt.xscale('log')
