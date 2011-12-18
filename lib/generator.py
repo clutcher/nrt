@@ -79,7 +79,7 @@ def evolveClassicBA(m, m0, n, r, p):
         edges = aGraph.edges()
         for edg in edges:
             MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-            if (MN < r * avdegr and MN > n):
+            if (MN < r * avdegr or random.random() < p) and MN > n:
                 aGraph.remove_edge(edg[0], edg[1])
                 avdegr = calculate_average_degree(aGraph)
                 allRemoved = 0
@@ -251,7 +251,7 @@ def evolveFlower(x, y, n, r, p):
 
         for edge in edges:
             avdegr = calculate_average_degree(aGraph)
-            if max(edge) / avdegr > r * avdegr or random.random() < p:
+            if min(edge) / avdegr > r * avdegr or random.random() < p:
                 #Transforming one edge
                 aGraph.remove_edge(edge[0], edge[1])
 

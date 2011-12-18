@@ -32,19 +32,18 @@ if __name__ == '__main__':
     assortativityT = []
 
     numberOfRealization = 1
-    network = 'Flower'
+    network = 'ClassicBA'
 
     #Generate many networks for making nyu graphic
     while r < 1:
         for i in xrange(numberOfRealization):
-            print r, i
 
             if network == 'BA':
                 G = generator.evolveBA(1000, 20, r, 3, 0, 0)
             elif network == 'Flower':
-                G = generator.evolveClassicFlower(2, 2, 5, r, 0.5)
+                G = generator.evolveFlower(2, 2, 6, r, 0.3)
             elif network == 'ClassicBA':
-                G = generator.evolveClassicBA(1000, 20, 3, r, 0)
+                G = generator.evolveClassicBA(1000, 20, 3, r, 0.2)
 
             nyutemp = calculation.calculate_nyu(G)
             if (nyutemp != 0) and flag:
@@ -84,6 +83,7 @@ if __name__ == '__main__':
             nyu.append(sum)
 
             rlist.append(r - rc)
+        print r, i
         r = r + 0.1
 
         #Clearing temporary variables
@@ -101,9 +101,9 @@ if __name__ == '__main__':
 
     #Parametr graphics
     graphics.make_coeficient_graphic(rlist, nyu, "nyu")
-    graphics.make_coeficient_graphic(rlist, clustering, "clustering")
-    graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
-    graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
+#    graphics.make_coeficient_graphic(rlist, clustering, "clustering")
+#    graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
+#    graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
 
 
 #    plt.show()

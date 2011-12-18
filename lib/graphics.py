@@ -38,6 +38,7 @@ def make_graph(aGraph):
         pass
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close('all')
 
 
 def make_probability_graphic(aGraph):
@@ -77,6 +78,7 @@ def make_probability_graphic(aGraph):
         pass
     fname = "Graphics/probability/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close('all')
 
 
 def make_betweenness_graphic(aGraph):
@@ -98,6 +100,7 @@ def make_betweenness_graphic(aGraph):
         pass
     fname = "Graphics/betweenness/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close('all')
 
 
 def make_degree_histogram(aGraph):
@@ -117,6 +120,7 @@ def make_degree_histogram(aGraph):
         pass
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close('all')
 
 
 def make_rank_distribution(aGraph):
@@ -138,6 +142,7 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.close('all')
 
 
 def make_coeficient_graphic(r, coef, name):
@@ -172,3 +177,4 @@ def make_coeficient_graphic(r, coef, name):
         pass
     fname = "Graphics/" + name + ".png"
     plt.savefig(fname)
+    plt.close('all')
