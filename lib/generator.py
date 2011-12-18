@@ -13,16 +13,19 @@ def calculate_average_degree(aGraph):
     return avdegree
 
 
-def removeR(aGraph, r):
+def removeR(aGraph, r, p):
+    """aGraph - network
+        r - coefficient of bribery
+        p - probabilty of not concidering parametr r
+    """
     avdegr = calculate_average_degree(aGraph)
     edges = aGraph.edges()
     for edg in edges:
         MX = max(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
         MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-        if MN < r * avdegr and MN > 3:
+        if (MN < r * avdegr and MN > 3) or random.random() < p:
             aGraph.remove_edge(edg[0], edg[1])
             avdegr = calculate_average_degree(aGraph)
-            print avdegr
     return aGraph
 
 
@@ -66,7 +69,6 @@ def evolveClassicBA(m, m0, n):
         sumk = float(aGraph.number_of_edges() * 2)
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / sumk
-        print new
     return aGraph
 
 
@@ -75,7 +77,7 @@ def evolveBA(m, m0, r, n, di, p):
         Adding nodes
         m - number of nodes to evolve
         m0 - number of initial nodes
-        r - r(k)
+        r - coefficient of bribery
         n - number of edges of each new node
         di - 1 -make directed graph, 0 - usual raph
         p - probabilty of not concidering parametr r
@@ -126,8 +128,12 @@ def evolveBA(m, m0, r, n, di, p):
     return aGraph
 
 
-def evolveFlower(x, y, n, r):
+def evolveFlower(x, y, n, r, p):
     """(x,y) flower network generator
+        x, y - number of nodes on edges
+        n - number of transformation of all edges
+        r - coeficient of bribery
+        p - probabilty of not concidering parametr r
     """
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
@@ -143,15 +149,14 @@ def evolveFlower(x, y, n, r):
     aGraph.add_node(1)
     aGraph.add_edge(0, 1)
 
-    print 0
-
     #Generating new nodes
     for iterations in xrange(1, n):
         #List of edges
         edges = aGraph.edges()
+
         for edge in edges:
             avdegr = calculate_average_degree(aGraph)
-            if max(edge) / avdegr > r * avdegr:
+            if max(edge) / avdegr > r * avdegr or random.random() < p:
                 #Transforming one edge
                 aGraph.remove_edge(edge[0], edge[1])
 
@@ -187,6 +192,4 @@ def evolveFlower(x, y, n, r):
                         aGraph.add_edge(new - 1, new)
                 #Last edge
                 aGraph.add_edge(edge[1], len(aGraph) - 1)
-        print iterations
-    print 'end'
     return aGraph
