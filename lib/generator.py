@@ -123,7 +123,6 @@ def evolveBA(m, m0, r, n, di, p):
         sumk = float(aGraph.number_of_edges() * 2)
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / sumk
-        print new
     return aGraph
 
 

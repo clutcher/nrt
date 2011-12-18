@@ -12,7 +12,7 @@ import lib.calculation as calculation
 if __name__ == '__main__':
 
     #r - the coefficient of bribery
-    r = 0.0
+    r = 0.4
     #rc - critical coefficient of bribery
     rc = 0
     #rlist - list of r, where r > rc
@@ -30,13 +30,15 @@ if __name__ == '__main__':
     shortpathT = []
     assortativityT = []
 
-    numberOfRealization = 30
+    numberOfRealization = 5
     network = 'BA'
     if network == 'BA':
         #Generate many networks for making nyu graphic
-        while r < 1:
+        while r < 0.6:
             for i in xrange(numberOfRealization):
-                G = generator.evolveBA(2000, 20, r, 3, 0, 0)
+                print r, i
+
+                G = generator.evolveBA(1000, 20, r, 3, 0, 0)
 
                 nyutemp = calculation.calculate_nyu(G)
                 if (nyutemp != 0) and flag:
@@ -75,16 +77,20 @@ if __name__ == '__main__':
                 nyu.append(sum)
 
                 #Adding 0.001 to avoid log 0
-                print r
                 rlist.append(r - rc + 0.001)
-            r = r + 0.01
+            r = r + 0.001
+            #Clearing
+            nyuT = []
+            clusteringT = []
+            shortpathT = []
+            assortativityT = []
 
         #Network graphics
 #        graphics.make_graph(G)
 #        graphics.make_betweenness_graphic(G)
 #        graphics.make_probability_graphic(G)
 #        graphics.make_degree_histogram(G)
-#        graphics.make_rank_distribution(G)
+            graphics.make_rank_distribution(G)
 
         #Parametr graphics
         graphics.make_coeficient_graphic(rlist, nyu, "nyu")
