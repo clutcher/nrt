@@ -21,7 +21,7 @@ def removeR(aGraph, r, p):
     avdegr = calculate_average_degree(aGraph)
     edges = aGraph.edges()
     for edg in edges:
-        MX = max(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
+#        MX = max(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
         MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
         if (MN < r * avdegr and MN > 3) or random.random() < p:
             aGraph.remove_edge(edg[0], edg[1])
@@ -29,7 +29,7 @@ def removeR(aGraph, r, p):
     return aGraph
 
 
-def evolveClassicBA(m, m0, n):
+def evolveClassicBA(m, m0, n, r, p):
     """Barabasi-Albert model generator
         Adding nodes
         m - number of nodes to evolve
@@ -39,7 +39,8 @@ def evolveClassicBA(m, m0, n):
     #Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
-    name = "ba_m=" + repr(m) + "_n=" + repr(n)
+    name = "ba_m=" + repr(m) + "_n=" + repr(n) + \
+    "_r=" + repr(r) + "_p=" + repr(p)
     aGraph.name = name
 
     #Add first m0 nodes
@@ -69,6 +70,20 @@ def evolveClassicBA(m, m0, n):
         sumk = float(aGraph.number_of_edges() * 2)
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / sumk
+
+    #Removing edges
+    allRemoved = 0
+    while not allRemoved:
+        allRemoved = 1
+        avdegr = calculate_average_degree(aGraph)
+        edges = aGraph.edges()
+        for edg in edges:
+            MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
+            if (MN < r * avdegr and MN > n):
+                aGraph.remove_edge(edg[0], edg[1])
+                avdegr = calculate_average_degree(aGraph)
+                allRemoved = 0
+
     return aGraph
 
 
@@ -125,6 +140,86 @@ def evolveBA(m, m0, r, n, di, p):
         sumk = float(aGraph.number_of_edges() * 2)
         for k in xrange(new):
             aGraph.probability[k] = aGraph.degree(k) / sumk
+    return aGraph
+
+
+def evolveClassicFlower(x, y, n, r, p):
+    """(x,y) flower network generator
+        x, y - number of nodes on edges
+        n - number of transformation of all edges
+        r - coeficient of bribery
+        p - probabilty of not concidering parametr r
+    """
+    if x < 1 or y < 2 or n < 2:
+        return "Error in input data"
+    #Initializing graph
+    aGraph = nx.Graph()
+    aGraph.probability = {}
+    name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
+    "_n=" + repr(n) + "_r=" + repr(r)
+    aGraph.name = name
+
+    #Add first 2 nodes and 1 edge
+    aGraph.add_node(0)
+    aGraph.add_node(1)
+    aGraph.add_edge(0, 1)
+
+    #Generating new nodes
+    for iterations in xrange(1, n):
+        #List of edges
+        edges = aGraph.edges()
+
+        for edge in edges:
+            #Transforming one edge
+            aGraph.remove_edge(edge[0], edge[1])
+
+            #len(aGraph) calculate length from 1
+            #we calculate nodes from 0
+
+            #Adding line x
+
+            length = len(aGraph)
+            #First node at line x
+            aGraph.add_node(length)
+            aGraph.add_edge(edge[0], length)
+
+            #Rest nodes at line x
+            if x > 1:
+                for new in xrange(length + 1, length + x - 1):
+                    aGraph.add_node(new)
+                    aGraph.add_edge(new - 1, new)
+            #Last edge
+            aGraph.add_edge(edge[1], len(aGraph) - 1)
+
+            #Adding line y
+
+            length = len(aGraph)
+            #First node at line y
+            aGraph.add_node(length)
+            aGraph.add_edge(edge[0], length)
+
+            #Rest nodes at line y
+            if y > 1:
+                for new in xrange(length + 1, length + y - 1):
+                    aGraph.add_node(new)
+                    aGraph.add_edge(new - 1, new)
+            #Last edge
+            aGraph.add_edge(edge[1], len(aGraph) - 1)
+    #Removing edges
+    allRemoved = 0
+    t = 0
+    while not allRemoved:
+        allRemoved = 1
+        avdegr = calculate_average_degree(aGraph)
+        edges = aGraph.edges()
+        for edg in edges:
+            MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
+            if (MN < r * avdegr and MN > 1):
+                aGraph.remove_edge(edg[0], edg[1])
+                avdegr = calculate_average_degree(aGraph)
+                allRemoved = 0
+                t += 1
+    print t
     return aGraph
 
 

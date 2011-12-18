@@ -42,14 +42,14 @@ if __name__ == '__main__':
             if network == 'BA':
                 G = generator.evolveBA(1000, 20, r, 3, 0, 0)
             elif network == 'Flower':
-                G = generator.evolveFlower(2, 2, 7, r, 0.5)
+                G = generator.evolveClassicFlower(2, 2, 5, r, 0.5)
             elif network == 'ClassicBA':
-                G = generator.evolveClassicBA(1000, 20, 3)
-                generator.removeR(G, r, 0.2)
+                G = generator.evolveClassicBA(1000, 20, 3, r, 0)
 
             nyutemp = calculation.calculate_nyu(G)
             if (nyutemp != 0) and flag:
-                rc = r
+                #-0.0001 to avoid log 0 in graphics
+                rc = r - 0.0001
                 flag = 0
             if rc != 0:
                 clusteringT.append(nx.average_clustering(G))
@@ -83,9 +83,8 @@ if __name__ == '__main__':
             sum = sum / (len(nyuT) + 1)
             nyu.append(sum)
 
-            #Adding 0.001 to avoid log 0
-            rlist.append(r - rc + 0.001)
-        r = r + 0.01
+            rlist.append(r - rc)
+        r = r + 0.1
 
         #Clearing temporary variables
         nyuT = []
@@ -94,11 +93,11 @@ if __name__ == '__main__':
         assortativityT = []
 
         #Network graphics
-#            graphics.make_graph(G)
-#            graphics.make_betweenness_graphic(G)
-#            graphics.make_probability_graphic(G)
-#            graphics.make_degree_histogram(G)
-#            graphics.make_rank_distribution(G)
+#        graphics.make_graph(G)
+#        graphics.make_betweenness_graphic(G)
+#        graphics.make_probability_graphic(G)
+#        graphics.make_degree_histogram(G)
+        graphics.make_rank_distribution(G)
 
     #Parametr graphics
     graphics.make_coeficient_graphic(rlist, nyu, "nyu")

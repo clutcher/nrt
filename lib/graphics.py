@@ -27,7 +27,6 @@ def make_graph(aGraph):
     """Make graph of network"""
     import matplotlib.pyplot as plt
 
-    fig = plt.figure()
     plt.title("Network graph " + aGraph.name)
     pos = nx.graphviz_layout(aGraph, prog="dot", root=0)
     nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
@@ -39,8 +38,6 @@ def make_graph(aGraph):
         pass
     fname = "Graphics/graph/" + aGraph.name + ".png"
     plt.savefig(fname)
-#    plt.close(fig)
-    return fig
 
 
 def make_probability_graphic(aGraph):
@@ -49,7 +46,6 @@ def make_probability_graphic(aGraph):
     """
     import matplotlib.pyplot as plt
 
-    fig = plt.figure()
     plt.title("Probability graph " + aGraph.name)
     plt.yscale('log')
     plt.xscale('log')
@@ -81,7 +77,6 @@ def make_probability_graphic(aGraph):
         pass
     fname = "Graphics/probability/" + aGraph.name + ".png"
     plt.savefig(fname)
-    plt.close(fig)
 
 
 def make_betweenness_graphic(aGraph):
@@ -89,7 +84,6 @@ def make_betweenness_graphic(aGraph):
     """
     import matplotlib.pyplot as plt
 
-    fig = plt.figure()
     plt.title("Betweenness graph " + aGraph.name)
     plt.yscale('log')
     plt.xscale('log')
@@ -104,14 +98,12 @@ def make_betweenness_graphic(aGraph):
         pass
     fname = "Graphics/betweenness/" + aGraph.name + ".png"
     plt.savefig(fname)
-    plt.close(fig)
 
 
 def make_degree_histogram(aGraph):
     """Make a histogram of degrees"""
     import matplotlib.pyplot as plt
 
-    fig = plt.figure()
     plt.title("Degree histogram " + aGraph.name)
     yi = nx.degree_histogram(aGraph)
     xi = range(len(yi))
@@ -125,14 +117,12 @@ def make_degree_histogram(aGraph):
         pass
     fname = "Graphics/degree_hist/" + aGraph.name + ".png"
     plt.savefig(fname)
-    plt.close(fig)
 
 
 def make_rank_distribution(aGraph):
     """Make rank distribution by degree graphic"""
     import matplotlib.pyplot as plt
 
-    fig = plt.figure()
     plt.title("Rank distribution")
     yi = list(aGraph.degree().values())
     yi.sort(reverse=True)
@@ -148,8 +138,6 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
-    return fig
-    plt.close(fig)
 
 
 def make_coeficient_graphic(r, coef, name):
@@ -160,7 +148,7 @@ def make_coeficient_graphic(r, coef, name):
         print "Length of coeficient or r is invalid!"
         print len(coef), len(r)
         return 0
-    fig = plt.figure()
+
     title = str(name) + " distribution"
     plt.title(title)
     plt.plot(r, coef, 'ro')
@@ -183,5 +171,4 @@ def make_coeficient_graphic(r, coef, name):
     except OSError:
         pass
     fname = "Graphics/" + name + ".png"
-    fig.savefig(fname)
-    plt.close(fig)
+    plt.savefig(fname)
