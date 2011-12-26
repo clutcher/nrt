@@ -5,105 +5,199 @@ import networkx as nx
 #import matplotlib.pyplot as plt
 #import time
 
+#import gui.main as gui
+from PyQt4 import QtCore, QtGui
+import sys
+
 import lib.generator as generator
 import lib.graphics as graphics
 import lib.calculation as calculation
 
-if __name__ == '__main__':
+from gui.mainForm import Ui_MainWindow as MainWindow
 
-    #r - the coefficient of bribery
-    r = 0.0
-    #rc - critical coefficient of bribery
-    rc = 0
-    #rlist - list of r, where r > rc
-    rlist = []
-    #flag - finding first rc
-    flag = 1
 
-    nyu = []
-    clustering = []
-    shortpath = []
-    assortativity = []
+class MainForm(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.ui = MainWindow()
+        self.ui.setupUi(self)
+        self.ui.buidProgress.setProperty("value", 0)
+        self.ui.gdataBgr_FL.hide()
+        self.ui.startr.setText('0.0')
+        self.ui.endr.setText('1.0')
+        self.ui.stepr.setText('0.01')
+        self.ui.numr.setText('1')
 
-    #Temps for finding average by realization
-    nyuT = []
-    clusteringT = []
-    shortpathT = []
-    assortativityT = []
+        self.connect(self.ui.graphList, \
+        QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.GraphDisplay)
+        self.connect(self.ui.magikBtn, \
+        QtCore.SIGNAL("clicked()"), self.makeResearch)
 
-    numberOfRealization = 1
-    network = 'ClassicBA'
+    def GraphDisplay(self):
+        if self.ui.graphList.currentIndex() < 2:
+            self.ui.gdataBgr_FL.hide()
+            self.ui.gdataBgr_BA.show()
+        else:
+            self.ui.gdataBgr_BA.hide()
+            self.ui.gdataBgr_FL.show()
 
-    #Generate many networks for making nyu graphic
-    while r < 1:
-        for i in xrange(numberOfRealization):
+    def makeResearch(self):
+        self.ui.buidProgress.setProperty("value", 0)
+        flagList = {'graph': self.ui.chackGraph.isChecked(),
+                    'betweenneess': self.ui.checkBtw.isChecked(),
+                    'probability': self.ui.checkProb.isChecked(),
+                    'degree': self.ui.checkDeghist.isChecked(),
+                    'rank': self.ui.checkRankdisp.isChecked(),
+                    'nyu': self.ui.checkNyu.isChecked(),
+                    'clustering': self.ui.checkClust.isChecked(),
+                    'shortpath': self.ui.checkSP.isChecked(),
+                    'assortativity': self.ui.checkAssort.isChecked()}
 
-            if network == 'BA':
-                G = generator.evolveBA(1000, 20, r, 3, 0, 0)
-            elif network == 'Flower':
-                G = generator.evolveFlower(2, 2, 6, r, 0.3)
-            elif network == 'ClassicBA':
-                G = generator.evolveClassicBA(1000, 20, 3, r, 0.2)
+        globalCheckFlag = 0
 
-            nyutemp = calculation.calculate_nyu(G)
-            if (nyutemp != 0) and flag:
-                #-0.0001 to avoid log 0 in graphics
-                rc = r - 0.0001
-                flag = 0
-            if rc != 0:
-                clusteringT.append(nx.average_clustering(G))
-                shortpathT.append(nx.average_shortest_path_length(G))
-                assortativityT.append(abs(nx.degree_assortativity(G)))
-                nyuT.append(nyutemp)
+        if flagList['nyu'] or flagList['clustering'] or flagList['shortpath'] \
+          or flagList['assortativity']:
+            globalCheckFlag = 1
 
-        #Finding average parameters
-        if rc != 0:
-            sum = 0.0
-            for temp in clusteringT:
-                sum += temp
-            sum = sum / (len(clusteringT) + 1)
-            clustering.append(sum)
+        #r - the coefficient of bribery
+        startr = float(self.ui.startr.text())
+        endr = float(self.ui.endr.text())
+        stepr = float(self.ui.stepr.text())
 
-            sum = 0.0
-            for temp in shortpathT:
-                sum += temp
-            sum = sum / (len(shortpathT) + 1)
-            shortpath.append(sum)
+        if self.ui.graphList.currentIndex() < 2:
+            m = int(self.ui.mBA.text())
+            m0 = int(self.ui.m0BA.text())
+            n = int(self.ui.nBA.text())
+            p = int(self.ui.pBA.text())
+            di = int(self.ui.diBA.text())
 
-            sum = 0.0
-            for temp in assortativityT:
-                sum += temp
-            sum = sum / (len(assortativityT) + 1)
-            assortativity.append(sum)
+        if self.ui.graphList.currentIndex() > 1:
+            x = int(self.ui.xFL.text())
+            y = int(self.ui.yFL.text())
+            n = int(self.ui.nFL.text())
+            r = int(self.ui.rFL.text())
+            p = int(self.ui.pFL.text())
+        #rc - critical coefficient of bribery
+        rc = 0
+        #rlist - list of r, where r > rc
+        rlist = []
+        #flag - finding first rc
+        flag = 1
 
-            sum = 0.0
-            for temp in nyuT:
-                sum += temp
-            sum = sum / (len(nyuT) + 1)
-            nyu.append(sum)
+        nyu = []
+        clustering = []
+        shortpath = []
+        assortativity = []
 
-            rlist.append(r - rc)
-        print r, i
-        r = r + 0.1
-
-        #Clearing temporary variables
+        #Temps for finding average by realization
         nyuT = []
         clusteringT = []
         shortpathT = []
         assortativityT = []
 
-        #Network graphics
-#        graphics.make_graph(G)
-#        graphics.make_betweenness_graphic(G)
-#        graphics.make_probability_graphic(G)
-#        graphics.make_degree_histogram(G)
-        graphics.make_rank_distribution(G)
+        numberOfRealization = int(self.ui.numr.text())
+        r = startr
 
-    #Parametr graphics
-    graphics.make_coeficient_graphic(rlist, nyu, "nyu")
-#    graphics.make_coeficient_graphic(rlist, clustering, "clustering")
-#    graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
-#    graphics.make_coeficient_graphic(rlist, assortativity, "assortativity")
+        #Generate many networks for making nyu graphic
+        while r < endr:
+            for i in xrange(numberOfRealization):
+                network = self.ui.graphList.currentIndex()
+                if network == 1:
+                    G = generator.evolveBA(m, m0, r, n, di, p)
+                elif network == 3:
+                    G = generator.evolveFlower(x, y, n, r, p)
+                elif network == 0:
+                    G = generator.evolveClassicBA(m, m0, n, r, p)
+                elif network == 2:
+                    G = generator.evolveClassicFlower(x, y, n, r, p)
+
+                nyutemp = calculation.calculate_nyu(G)
+                if (nyutemp != 0) and flag:
+                    #-0.0001 to avoid log 0 in graphics
+                    rc = r - 0.0001
+                    flag = 0
+                if rc != 0 and globalCheckFlag:
+                    if flagList['clustering'] == 1:
+                        clusteringT.append(nx.average_clustering(G))
+                    if flagList['shortpath'] == 1:
+                        shortpathT.append(nx.average_shortest_path_length(G))
+                    if flagList['assortativity'] == 1:
+                        assortativityT.append(abs(nx.degree_assortativity(G)))
+                    if flagList['nyu'] == 1:
+                        nyuT.append(nyutemp)
+
+            #Finding average parameters
+            if rc != 0 and globalCheckFlag:
+                if flagList['clustering'] == 1:
+                    sum = 0.0
+                    for temp in clusteringT:
+                        sum += temp
+                    sum = sum / (len(clusteringT) + 1)
+                    clustering.append(sum)
+
+                if flagList['shortpath'] == 1:
+                    sum = 0.0
+                    for temp in shortpathT:
+                        sum += temp
+                    sum = sum / (len(shortpathT) + 1)
+                    shortpath.append(sum)
+
+                if flagList['assortativity'] == 1:
+                    sum = 0.0
+                    for temp in assortativityT:
+                        sum += temp
+                    sum = sum / (len(assortativityT) + 1)
+                    assortativity.append(sum)
+
+                if flagList['nyu'] == 1:
+                    sum = 0.0
+                    for temp in nyuT:
+                        sum += temp
+                    sum = sum / (len(nyuT) + 1)
+                    nyu.append(sum)
+
+                rlist.append(r - rc)
+            r = r + stepr
+            self.ui.buidProgress.setProperty("value", 100 * r / endr)
+
+            #Clearing temporary variables
+            nyuT = []
+            clusteringT = []
+            shortpathT = []
+            assortativityT = []
+
+            #Network graphics
+            if flagList['graph'] == 1:
+                graphics.make_graph(G)
+            if flagList['betweenneess'] == 1:
+                graphics.make_betweenness_graphic(G)
+            if flagList['probability'] == 1:
+                graphics.make_probability_graphic(G)
+            if flagList['degree'] == 1:
+                graphics.make_degree_histogram(G)
+            if flagList['rank'] == 1:
+                graphics.make_rank_distribution(G)
+
+        #Parametr graphics
+        if flagList['nyu'] == 1:
+            graphics.make_coeficient_graphic(rlist, nyu, "nyu")
+        if flagList['clustering'] == 1:
+            graphics.make_coeficient_graphic(rlist, clustering, "clustering")
+        if flagList['shortpath'] == 1:
+            graphics.make_coeficient_graphic(rlist, shortpath, "shortpath")
+        if flagList['assortativity'] == 1:
+            graphics.make_coeficient_graphic(rlist, assortativity,
+            "assortativity")
+
+
+if __name__ == '__main__':
+
+    app = QtGui.QApplication(sys.argv)
+    myapp = MainForm()
+    myapp.show()
+    sys.exit(app.exec_())
+
+
 
 
 #    plt.show()
@@ -131,3 +225,5 @@ if __name__ == '__main__':
 #        line = repr(sp) + "\n"
 #        fsh.write(line)
 ##    fsh.close()
+
+################GOGOGO!!!
