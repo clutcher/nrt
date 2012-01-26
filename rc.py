@@ -1,6 +1,6 @@
-# -*- coding: utf-8 *-*
 # -*- coding: utf-8 -*-
-"""Main research module"""
+
+"""Rc finding module"""
 
 import matplotlib.pyplot as plt
 

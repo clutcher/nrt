@@ -13,23 +13,27 @@ def calculate_average_degree(aGraph):
     return avdegree
 
 
-def removeR(aGraph, r, p):
+def remove_edges(aGraph, r, p):
     """aGraph - network
         r - coefficient of bribery
         p - probabilty of not concidering parametr r
     """
-    avdegr = calculate_average_degree(aGraph)
-    edges = aGraph.edges()
-    for edg in edges:
-#        MX = max(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-        MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-        if (MN < r * avdegr and MN > 3) or random.random() < p:
-            aGraph.remove_edge(edg[0], edg[1])
-            avdegr = calculate_average_degree(aGraph)
+    n = min(aGraph.degree())
+    allRemoved = 0
+    while not allRemoved:
+        allRemoved = 1
+        avdegr = calculate_average_degree(aGraph)
+        edges = aGraph.edges()
+        for edg in edges:
+            MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
+            if (MN < r * avdegr or random.random() < p) and MN > n:
+                aGraph.remove_edge(edg[0], edg[1])
+                avdegr = calculate_average_degree(aGraph)
+                allRemoved = 0
     return aGraph
 
 
-def evolveClassicBA(m, m0, n, r, p):
+def evolve_ba_removing_edges(m, m0, n, r, p):
     """Barabasi-Albert model generator
         Adding nodes
         m - number of nodes to evolve
@@ -61,7 +65,7 @@ def evolveClassicBA(m, m0, n, r, p):
         while aGraph.degree(new) < n:
             for i in xrange(n1):
                 #Add degrees
-                if (random.random() <= aGraph.probability[i]):
+                if random.random() <= aGraph.probability[i]:
                     aGraph.add_edge(new, i)
                     if aGraph.degree(new) == n:
                         break
@@ -72,29 +76,18 @@ def evolveClassicBA(m, m0, n, r, p):
             aGraph.probability[k] = aGraph.degree(k) / sumk
 
     #Removing edges
-    allRemoved = 0
-    while not allRemoved:
-        allRemoved = 1
-        avdegr = calculate_average_degree(aGraph)
-        edges = aGraph.edges()
-        for edg in edges:
-            MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-            if (MN < r * avdegr or random.random() < p) and MN > n:
-                aGraph.remove_edge(edg[0], edg[1])
-                avdegr = calculate_average_degree(aGraph)
-                allRemoved = 0
-
+    remove_edges(aGraph, r, 0)
     return aGraph
 
 
-def evolveBA(m, m0, r, n, di, p):
+def evolve_ba_with_briebery(m, m0, r, n, di, p):
     """Barabasi-Albert model generator
         Adding nodes
         m - number of nodes to evolve
         m0 - number of initial nodes
         r - coefficient of bribery
         n - number of edges of each new node
-        di - 1 -make directed graph, 0 - usual raph
+        di - 1 -make directed graph, 0 - usual graph
         p - probabilty of not concidering parametr r
     """
     #Initializing graph
@@ -143,7 +136,7 @@ def evolveBA(m, m0, r, n, di, p):
     return aGraph
 
 
-def evolveClassicFlower(x, y, n, r, p):
+def evolve_flower_removing_edges(x, y, n, r, p):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
@@ -206,24 +199,11 @@ def evolveClassicFlower(x, y, n, r, p):
             #Last edge
             aGraph.add_edge(edge[1], len(aGraph) - 1)
     #Removing edges
-    allRemoved = 0
-    t = 0
-    while not allRemoved:
-        allRemoved = 1
-        avdegr = calculate_average_degree(aGraph)
-        edges = aGraph.edges()
-        for edg in edges:
-            MN = min(aGraph.degree(edg[0]), aGraph.degree(edg[1]))
-            if (MN < r * avdegr and MN > 1):
-                aGraph.remove_edge(edg[0], edg[1])
-                avdegr = calculate_average_degree(aGraph)
-                allRemoved = 0
-                t += 1
-    print t
+    remove_edges(aGraph, r, p)
     return aGraph
 
 
-def evolveFlower(x, y, n, r, p):
+def evolve_flower_with_briebery(x, y, n, r, p):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
