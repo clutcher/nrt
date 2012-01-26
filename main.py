@@ -28,10 +28,10 @@ class MainForm(QtGui.QMainWindow):
         self.ui.stepr.setText('0.01')
         self.ui.numr.setText('1')
 
-        self.connect(self.ui.graphList, \
-        QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.GraphDisplay)
-        self.connect(self.ui.magikBtn, \
-        QtCore.SIGNAL("clicked()"), self.makeResearch)
+        self.connect(self.ui.graphList,
+            QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.GraphDisplay)
+        self.connect(self.ui.magikBtn,
+            QtCore.SIGNAL("clicked()"), self.makeResearch)
 
     def GraphDisplay(self):
         if self.ui.graphList.currentIndex() < 2:
@@ -75,7 +75,6 @@ class MainForm(QtGui.QMainWindow):
             x = int(self.ui.xFL.text())
             y = int(self.ui.yFL.text())
             n = int(self.ui.nFL.text())
-            r = int(self.ui.rFL.text())
             p = int(self.ui.pFL.text())
         #rc - critical coefficient of bribery
         rc = 0
@@ -103,13 +102,13 @@ class MainForm(QtGui.QMainWindow):
             for i in xrange(numberOfRealization):
                 network = self.ui.graphList.currentIndex()
                 if network == 1:
-                    G = generator.evolveBA(m, m0, r, n, di, p)
+                    G = generator.evolve_ba_with_briebery(m, m0, r, n, di, p)
                 elif network == 3:
-                    G = generator.evolveFlower(x, y, n, r, p)
-                elif network == 0:
-                    G = generator.evolveClassicBA(m, m0, n, r, p)
+                    G = generator.evolve_flower_with_briebery(x, y, n, r, p)
+                elif not network:
+                    G = generator.evolve_ba_removing_edges(m, m0, n, r, p)
                 elif network == 2:
-                    G = generator.evolveClassicFlower(x, y, n, r, p)
+                    G = generator.evolve_flower_removing_edges(x, y, n, r, p)
 
                 nyutemp = calculation.calculate_nyu(G)
                 if (nyutemp != 0) and flag:
@@ -157,7 +156,7 @@ class MainForm(QtGui.QMainWindow):
                     nyu.append(sum)
 
                 rlist.append(r - rc)
-            r = r + stepr
+            r += stepr
             self.ui.buidProgress.setProperty("value", 100 * r / endr)
 
             #Clearing temporary variables

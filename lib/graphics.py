@@ -14,7 +14,7 @@ def remove_zeros(xi, yi):
     yitemp = []
     iterator = 0
     for y in yi:
-        if y != 0:
+        if y:
             yitemp.append(y)
             xitemp.append(xi[iterator])
             iterator += 1
