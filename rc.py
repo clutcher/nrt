@@ -23,7 +23,7 @@ if __name__ == '__main__':
             print r
 
             for i in xrange(numberOfRealization):
-                G = generator.evolve_ba_with_briebery(m, 20, r, 3, 0, 0)
+                G = generator.evolve_ba_with_briebery(m, 20, r, 10, 0, 0)
                 nyutemp = calculation.calculate_nyu(G)
                 if nyutemp:
                     rc = r
@@ -32,7 +32,12 @@ if __name__ == '__main__':
                 rcAll.append(rc)
                 break
 
-            r += 0.001
+            r += 0.01
+
+    #Saving to file
+    fc = open('data/rc.txt', 'w')
+    fc.write(rcAll)
+    fc.close()
 
     plt.plot(rcAll, range(100, 5100, 500), 'ro')
     fname = "Graphics/rc.png"

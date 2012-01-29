@@ -51,7 +51,7 @@ def make_probability_graphic(aGraph):
     plt.yscale('log')
     plt.xscale('log')
     histTemp = nx.degree_histogram(aGraph)
-    sumk = sum(aGraph.degree().values())
+    sumk = sum(histTemp)
     yi = []
     #Calculating probability
     for y in histTemp:
