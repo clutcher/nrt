@@ -8,6 +8,7 @@ import networkx as nx
 #import gui.main as gui
 from PyQt4 import QtCore, QtGui
 import sys
+import threading
 
 import lib.generator as generator
 import lib.graphics as graphics
