@@ -30,7 +30,6 @@ def words_in_line(line):
 
 
 def make_graph_from_line(aGraph, line):
-    #lastPrev - connect two lines in file.
     lenOfLine = len(line) - 1
 
     for iterator in xrange(lenOfLine):

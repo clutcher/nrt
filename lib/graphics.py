@@ -9,7 +9,7 @@ import calculation
 
 
 def remove_zeros(xi, yi):
-    """Deleting zero y from x"""
+    """Deleting pairs (x, 0)"""
     xitemp = []
     yitemp = []
     iterator = 0
@@ -20,6 +20,7 @@ def remove_zeros(xi, yi):
             iterator += 1
         else:
             iterator += 1
+
     return xitemp, yitemp
 
 
@@ -28,7 +29,7 @@ def make_graph(aGraph):
     import matplotlib.pyplot as plt
 
     plt.title("Network graph " + aGraph.name)
-    pos = nx.graphviz_layout(aGraph, prog="dot", root=0)
+    pos = nx.graphviz_layout(aGraph, prog="circo", root=0)
     nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
         node_size=[30 * float(aGraph.degree(v)) for v in aGraph],
         node_color=[float(aGraph.degree(v)) for v in aGraph])
@@ -158,7 +159,7 @@ def make_coeficient_graphic(r, coef, name):
     plt.title(title)
     plt.plot(r, coef, 'ro')
     #Making approximation line
-    c, t = calculation.calculate_degree_least_square(r, coef)
+    c, t = calculation.calculate_degree_least_square(r[4:], coef[4:])
     yi = []
     for x in r:
         yi.append(c * (x ** t))
@@ -167,9 +168,9 @@ def make_coeficient_graphic(r, coef, name):
     text = "t= " + repr(t)
     plt.text(1, 1, text)
 
-    plt.yscale('log')
-    plt.xscale('log')
-    plt.xlabel("r-rc")
+#    plt.yscale('log')
+#    plt.xscale('log')
+    plt.xlabel("(r-rc)/rc")
     plt.ylabel(name)
     try:
         os.makedirs('Graphics')

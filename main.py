@@ -8,7 +8,7 @@ import networkx as nx
 #import gui.main as gui
 from PyQt4 import QtCore, QtGui
 import sys
-import threading
+#import threading
 
 import lib.generator as generator
 import lib.graphics as graphics
@@ -122,7 +122,7 @@ class MainForm(QtGui.QMainWindow):
                     if flagList['shortpath'] == 1:
                         shortpathT.append(nx.average_shortest_path_length(G))
                     if flagList['assortativity'] == 1:
-                        assortativityT.append(abs(nx.degree_assortativity(G)))
+                        assortativityT.append(abs(nx.degree_assortativity_coefficient(G)))
                     if flagList['nyu'] == 1:
                         nyuT.append(nyutemp)
 
