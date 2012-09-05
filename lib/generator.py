@@ -136,17 +136,47 @@ def evolve_ba_with_briebery(m, m0, r, n, di = 0, p = 0):
     return aGraph
 
 
+def evolve_ba_with_briebery_adj(m, m0, r, n, di = 0, p = 0):
+    """ Barabasi-Albert model generator
+         Adding nodes
+         m - number of nodes to evolve
+         m0 - number of initial nodes
+         r - coefficient of bribery
+         n - number of edges of each new node
+         di - 1 -make directed graph, 0 - usual graph
+         p - probabilty of not concidering parametr r
+    """
+    edgeList = []
+    edgeNumber = (m - m0) * n
+
+    #Because matrix index are from 0 to m-1
+    m = m - 1
+    briebery = (1 - r) * 2 * m
+    while edgeNumber > 0:
+        edge = (random.randint(0, m), random.randint(0, m))
+        if sum(edge) < briebery and edge not in edgeList:
+            edgeList.append(edge)
+            edgeNumber -= 1
+
+    aGraph = nx.from_edgelist(edgeList)
+    name = "ba_adj_m=" + repr(m) + "_r=" + repr(r) + \
+    "_n=" + repr(n) + "_p=" + repr(p)
+    aGraph.name = name
+    return aGraph
+
+
 def evolve_decorated_flower(x, y, n):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
     """
+
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
     #Initializing graph
     aGraph = nx.Graph()
     aGraphRemovedEdges = nx.Graph()
-    name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
+    name = "flower_decor_x=" + repr(x) + "_y=" + repr(y) + \
     "_n=" + repr(n)
     aGraph.name = name
 
@@ -169,20 +199,21 @@ def evolve_decorated_flower(x, y, n):
             #we calculate nodes from 0
 
             #Adding line x
+            if x != 1:
+                length = len(aGraph)
+                #First node at line x
+                aGraph.add_node(length)
+                aGraph.add_edge(edge[0], length)
 
-            length = len(aGraph)
-            #First node at line x
-            aGraph.add_node(length)
-            aGraph.add_edge(edge[0], length)
-
-            #Rest nodes at line x
-            if x > 1:
-                for new in xrange(length + 1, length + x - 1):
-                    aGraph.add_node(new)
-                    aGraph.add_edge(new - 1, new)
-            #Last edge
-            aGraph.add_edge(edge[1], len(aGraph) - 1)
-
+                #Rest nodes at line x
+                if x > 1:
+                    for new in xrange(length + 1, length + x - 1):
+                        aGraph.add_node(new)
+                        aGraph.add_edge(new - 1, new)
+                #Last edge
+                aGraph.add_edge(edge[1], len(aGraph) - 1)
+            else:
+                aGraph.add_edge(edge[0], edge[1])
             #Adding line y
 
             length = len(aGraph)
@@ -198,11 +229,131 @@ def evolve_decorated_flower(x, y, n):
             #Last edge
             aGraph.add_edge(edge[1], len(aGraph) - 1)
     aGraph.add_edges_from(e for e in aGraphRemovedEdges.edges_iter(data=True))
+    return aGraph
+
+def evolve_decorated_flower_adj(x, y, n, p = 0.9):
+    """(x,y) flower network generator by adjacency matrix
+        x, y - number of nodes on edges
+        n - number of transformation of all edges
+        p - probability of eding edge in area
+    """
+
+    def numberOfEdgesAndNodes():
+        numberOfEdges = []
+        numberOfEdges.append(1)
+
+        if (x+y) == 3:
+            for i in xrange(1, n):
+                numberOfEdges.append(numberOfEdges[-1]*(x+y))
+        else:
+            for i in xrange(1, n):
+                numberOfEdges.append(numberOfEdges[-1]*(x+y+1))
+
+        numberOfNodes = []
+        numberOfNodes.append(2)
+        for i in xrange(1,n):
+            numberOfNodes.append(numberOfNodes[-1] + numberOfEdges[i-1]*(x+y-2))
+        return numberOfNodes, numberOfEdges
+
+
+    if x < 1 or y < 2 or n < 2:
+        return "Error in input data"
+    p = 1 -p
+    numNodes, numEdges = numberOfEdgesAndNodes()
+
+    #Adjacency matrix is simmetric, so
+    #we will work with bottom triangle matrix
+    edgeList = []
+    edgeList.append([1, 0])
+    for i in xrange(1, n):
+        while len(edgeList) < numEdges[i]:
+            #numNodes - list with number of nodes
+            #adjacency marix has numeration from 0
+            #so there is -1
+            xI = random.randint(numNodes[i-1] + 1 - 1, numNodes[i]-1)
+            yI = random.randint(0, numNodes[i-1]-1)
+
+            if yI < numNodes[i-1]/4:
+#            if (numNodes[i-1] + numNodes[i])*0.9/2 < (xI + yI) < (numNodes[i-1] + numNodes[i])*1.1/2:
+                if [xI,yI] not in edgeList:
+                    edgeList.append([xI, yI])
+            elif random.random() < p:
+                if [xI,yI] not in edgeList:
+                    edgeList.append([xI, yI])
+
+    aGraph = nx.from_edgelist(edgeList)
+    name = "flower_decor_adj_x=" + repr(x) + "_y=" + repr(y) + \
+    "_n=" + repr(n)
+    aGraph.name = name
+    return aGraph
+
+
+
+def evolve_flower(x, y, n):
+    """(x,y) flower network generator
+        x, y - number of nodes on edges
+        n - number of transformation of all edges
+    """
+    if x < 1 or y < 2 or n < 2:
+        return "Error in input data"
+    #Initializing graph
+    aGraph = nx.Graph()
+    name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
+    "_n=" + repr(n)
+    aGraph.name = name
+
+    #Add first 2 nodes and 1 edge
+    aGraph.add_node(0)
+    aGraph.add_node(1)
+    aGraph.add_edge(0, 1)
+
+    #Generating new nodes
+    for iterations in xrange(1, n):
+        #List of edges
+        edges = aGraph.edges()
+
+        for edge in edges:
+            #Transforming one edge
+            aGraph.remove_edge(edge[0], edge[1])
+
+            #len(aGraph) calculate length from 1
+            #we calculate nodes from 0
+
+            #Adding line x
+            if x != 1:
+                length = len(aGraph)
+                #First node at line x
+                aGraph.add_node(length)
+                aGraph.add_edge(edge[0], length)
+
+                #Rest nodes at line x
+                if x > 1:
+                    for new in xrange(length + 1, length + x - 1):
+                        aGraph.add_node(new)
+                        aGraph.add_edge(new - 1, new)
+                #Last edge
+                aGraph.add_edge(edge[1], len(aGraph) - 1)
+            else:
+                aGraph.add_edge(edge[0], edge[1])
+            #Adding line y
+
+            length = len(aGraph)
+            #First node at line y
+            aGraph.add_node(length)
+            aGraph.add_edge(edge[0], length)
+
+            #Rest nodes at line y
+            if y > 1:
+                for new in xrange(length + 1, length + y - 1):
+                    aGraph.add_node(new)
+                    aGraph.add_edge(new - 1, new)
+            #Last edge
+            aGraph.add_edge(edge[1], len(aGraph) - 1)
 
     return aGraph
 
 
-def evolve_flower_removing_edges(x, y, n, r, p):
+def evolve_flower_removing_edges(x, y, n, r = 0, p = 0):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
@@ -269,7 +420,7 @@ def evolve_flower_removing_edges(x, y, n, r, p):
     return aGraph
 
 
-def evolve_flower_with_briebery(x, y, n, r, p):
+def evolve_flower_with_briebery(x, y, n, r = 0, p = 0):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges

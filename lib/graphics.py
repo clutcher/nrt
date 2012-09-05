@@ -30,7 +30,7 @@ def make_graph(aGraph):
 
     plt.title("Network graph " + aGraph.name)
     pos = nx.graphviz_layout(aGraph, prog="circo", root=0)
-    nx.draw(aGraph, pos, with_labels=False, alpha=0.5,
+    nx.draw(aGraph, pos, with_labels=True, alpha=0.5,
         node_size=[30 * float(aGraph.degree(v)) for v in aGraph],
         node_color=[float(aGraph.degree(v)) for v in aGraph])
     try:

@@ -4,7 +4,7 @@
 import networkx as nx
 import random
 import string
-import lib.graphics as graphics
+#import lib.graphics as graphics
 
 import matplotlib.pyplot as plt
 
@@ -75,5 +75,5 @@ if __name__ == "__main__":
     print nx.degree_assortativity_coefficient(G)
     print nx.info(G)
 #
-#    nx.draw(G)
-#    plt.show()
+    nx.draw(G)
+    plt.show()

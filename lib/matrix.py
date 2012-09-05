@@ -1,12 +1,13 @@
 #Some key imports.
 #Struct is used to create the actual bytes.
 #It is super handy for this type of thing.
-import struct, random
+import struct
+import os
 
 #Function to write a bmp file.  It takes a dictionary (d) of
 #header values and the pixel data (bytes) and writes them
 #to a file.  This function is called at the bottom of the code.
-def bmp_write(d,the_bytes):
+def bmp_write(d, the_bytes, aGraph):
     mn1 = struct.pack('<B',d['mn1'])
     mn2 = struct.pack('<B',d['mn2'])
     filesize = struct.pack('<L',d['filesize'])
@@ -25,7 +26,12 @@ def bmp_write(d,the_bytes):
     palette = struct.pack('<L',d['palette'])
     importantcolors = struct.pack('<L',d['importantcolors'])
     #create the outfile
-    outfile = open('Graphics/adj.bmp','wb')
+    try:
+        os.makedirs('Graphics/adj')
+    except OSError:
+        pass
+    fname = "Graphics/adj/" + aGraph.name + ".bmp"
+    outfile = open(fname,'wb')
     #write the header + the_bytes
     outfile.write(mn1+mn2+filesize+undef1+undef2+offset+headerlength+width+height+\
                   colorplanes+colordepth+compression+imagesize+res_hor+res_vert+\
@@ -33,7 +39,8 @@ def bmp_write(d,the_bytes):
     outfile.close()
 
 
-def write_image_from_matrix(adjacencyMatrix):
+def write_image_from_matrix(aGraph):
+    import networkx as nx
     #Here is a minimal dictionary with header values.
     #Of importance is the offset, headerlength, width,
     #height and colordepth.
@@ -41,6 +48,8 @@ def write_image_from_matrix(adjacencyMatrix):
     #These header values are described in the bmp format spec.
     #You can find it on the internet. This is for a Windows
     #Version 3 DIB header.
+
+    adjacencyMatrix = nx.adjacency_matrix(aGraph)
     weightHeight = len(adjacencyMatrix)
     d = {
         'mn1':66,
@@ -94,4 +103,4 @@ def write_image_from_matrix(adjacencyMatrix):
     #call the bmp_write function with the
     #dictionary of header values and the
     #bytes created above.
-    bmp_write(d,the_bytes)
+    bmp_write(d, the_bytes, aGraph)
