@@ -22,6 +22,27 @@ def calculate_nyu(aGraph):
     return nyu
 
 
+def calculate_nyu_decorated(aGraph):
+    """Calculating razriv on rank distribution graphic
+        nyu ~ (r-rc)^t for decorated flowers
+    """
+    nyu = 0
+    inedexes = []
+    yi = list(aGraph.degree().values())
+    yi.sort()
+    yi.reverse()
+    for degree in xrange(1,15):
+        try:
+            inedexes.append(yi.index(degree))
+        except:
+            continue
+    minIndex = min(inedexes)
+    nyu = yi[minIndex-1] - yi[minIndex]
+    if nyu < 4:
+        nyu = 0
+    return nyu
+
+
 def calculate_linear_least_square(x, y):
     """Using least square method for linear function.
         Returning coeficient k,b of y = kx + b

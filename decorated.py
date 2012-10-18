@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import lib.generator as generator
 import lib.graphics as graphics
 import lib.matrix as matrix
+import lib.calculation as calculation
 
 def spectrum(aGraph):
     spectrum = nx.adjacency_spectrum(aGraph)
@@ -28,10 +29,14 @@ if __name__ == '__main__':
     #plt.plot(frequency.keys(), frequency.values(), 'ro')
     #plt.show()
 
-
-
-#    G = generator.evolve_decorated_flower_adj(1, 2, 7)
-#    graphics.make_rank_distribution(G)
+    r = 0.99
+    while r<1:
+        G = generator.evolve_decorated_flower_adj(1, 2, 10, r, 0.)
+        nyutemp = calculation.calculate_nyu_decorated(G)
+        print r, nyutemp
+        print len(G)
+        r += 0.01
+#        graphics.make_rank_distribution(G)
 #    graphics.make_probability_graphic(G)
 ##    graphics.make_graph(G)
 #    matrix.write_image_from_matrix(G)
@@ -45,5 +50,5 @@ if __name__ == '__main__':
 #    graphics.make_probability_graphic(G2)
 ##    graphics.make_graph(G2)
 #    matrix.write_image_from_matrix(G2)
-    G3 = generator.evolve_ba_with_briebery(1000, 20, 0, 3)
-    matrix.write_image_from_matrix(G3)
+#    G3 = generator.evolve_ba_with_briebery(1000, 20, 0, 3)
+#    matrix.write_image_from_matrix(G3)

@@ -231,12 +231,15 @@ def evolve_decorated_flower(x, y, n):
     aGraph.add_edges_from(e for e in aGraphRemovedEdges.edges_iter(data=True))
     return aGraph
 
-def evolve_decorated_flower_adj(x, y, n, p = 0.9):
+def evolve_decorated_flower_adj(x, y, n, r = 0. , p = 0.):
     """(x,y) flower network generator by adjacency matrix
         x, y - number of nodes on edges
         n - number of transformation of all edges
         p - probability of eding edge in area
+        r - briebery
     """
+
+    import math
 
     def numberOfEdgesAndNodes():
         numberOfEdges = []
@@ -270,8 +273,16 @@ def evolve_decorated_flower_adj(x, y, n, p = 0.9):
             #numNodes - list with number of nodes
             #adjacency marix has numeration from 0
             #so there is -1
+
+            #Don`t add connection in R square
+            # -1 to avoid mistakes on first step generating
+            squareR = math.trunc(r*numNodes[i-1] - 1)
+
             xI = random.randint(numNodes[i-1] + 1 - 1, numNodes[i]-1)
-            yI = random.randint(0, numNodes[i-1]-1)
+            if xI > (numNodes[i]-1-squareR*1.5):
+                yI = random.randint(0, numNodes[i-1]-1 - squareR)
+            else:
+                yI = random.randint(0, numNodes[i-1]-1)
 
             if yI < numNodes[i-1]/4:
 #            if (numNodes[i-1] + numNodes[i])*0.9/2 < (xI + yI) < (numNodes[i-1] + numNodes[i])*1.1/2:
@@ -283,7 +294,7 @@ def evolve_decorated_flower_adj(x, y, n, p = 0.9):
 
     aGraph = nx.from_edgelist(edgeList)
     name = "flower_decor_adj_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n)
+    "_n=" + repr(n) + "_r=" + repr(r)
     aGraph.name = name
     return aGraph
 

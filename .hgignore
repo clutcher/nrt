@@ -1,5 +1,7 @@
 
 syntax: glob
 Graphics/*
+GraphOld/*
+GraphicsDecor/*
 nrt.nja
 .ropeproject
