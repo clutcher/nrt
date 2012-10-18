@@ -99,6 +99,11 @@ def count_parametrs(rc):
     asortAv = []
 
     while r<0.53:
+        nyuAv = []
+        cAv = []
+        spAv = []
+        asortAv = []
+
         for i in xrange(numberOfRealization):
             G = generator.evolve_ba_with_briebery(n, 20, r, 3)
 
