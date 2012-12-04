@@ -9,6 +9,24 @@ import lib.graphics as graphics
 global n
 n = 5000
 
+
+def make_dir():
+    import os
+
+    try:
+        os.makedirs('Graphics/')
+    except OSError:
+        pass
+    try:
+        os.makedirs('Graphics/article/')
+    except OSError:
+        pass
+    try:
+        os.makedirs('data')
+    except OSError:
+        pass
+
+
 def count_rank_distribution():
     G = generator.evolve_ba_with_briebery(n, 20, 0, 3)
     graphics.make_rank_distribution(G)
@@ -16,6 +34,7 @@ def count_rank_distribution():
     graphics.make_rank_distribution(G)
 
     print 'Made rank distribution'
+
 
 def count_rc():
     numberOfRealization = 10
@@ -39,7 +58,7 @@ def count_rc():
                 break
 
             r += 0.001
-    rcAll = range(100, 10000, 500)
+
     #Saving to file
     fc = open('data/rc.txt', 'w')
     for rc in rcAll:
@@ -51,18 +70,19 @@ def count_rc():
     plt.savefig(fname)
     plt.close('all')
 
-    print 'Find rc'
+    print 'Found rc'
     return rc
 
-def make_parametr_plot(xi, param, fileName, log = 1):
+
+def make_parametr_plot(xi, param, fileName, log=1):
 
     xi, param = graphics.remove_zeros(xi, param)
     param, xi = graphics.remove_zeros(param, xi)
 
     #Calculating least square
     length = len(xi)
-    startP = int(length*0.2)
-    endP = int(length*0.8)
+    startP = int(length * 0.2)
+    endP = int(length * 0.8)
     c, t = calculation.calculate_degree_least_square(xi[startP:endP], param[startP:endP])
 
     plt.title(str(t))
@@ -88,7 +108,7 @@ def count_parametrs(rc):
     nyu = []
     xi = []
     numberOfRealization = 10
-    r = 0.5
+    r = rc
     nyuAv = []
     nyuAll = []
     cAll = []
@@ -98,7 +118,9 @@ def count_parametrs(rc):
     asortAll = []
     asortAv = []
 
-    while r<0.53:
+    print 'And now we have a lot of computations! Wait a week.'
+
+    while r < rc + 0.1:
         nyuAv = []
         cAv = []
         spAv = []
@@ -112,31 +134,20 @@ def count_parametrs(rc):
             spAv.append(nx.average_shortest_path_length(G))
             asortAv.append(nx.degree_assortativity_coefficient(G))
 
-        nyu = sum(nyuAv)/float(numberOfRealization)
-        c = sum(cAv)/float(numberOfRealization)
-        sp = sum(spAv)/float(numberOfRealization)
-        asort = sum(asortAv)/float(numberOfRealization)
+        nyu = sum(nyuAv) / float(numberOfRealization)
+        c = sum(cAv) / float(numberOfRealization)
+        sp = sum(spAv) / float(numberOfRealization)
+        asort = sum(asortAv) / float(numberOfRealization)
 
         nyuAll.append(nyu)
         cAll.append(c)
         spAll.append(sp)
         asortAll.append(asort)
 
-        xi.append(float(r-rc)/rc)
+        xi.append(float(r - rc) / rc)
         r += 0.0001
 
-    make_parametr_plot(xi, nyuAll, 'nyuLogLog')
-    make_parametr_plot(xi, cAll, 'clusteringLogLog')
-    make_parametr_plot(xi, spAll, 'spLogLog')
-    try:
-        make_parametr_plot(xi, asortAll, 'asortLogLog')
-    except:
-        pass
-
-    make_parametr_plot(xi, nyuAll, 'nyu', log = 0)
-    make_parametr_plot(xi, cAll, 'clustering', log = 0)
-    make_parametr_plot(xi, spAll, 'sp', log = 0)
-    make_parametr_plot(xi, asortAll, 'asort', log = 0)
+    print 'Yes! It`s done! Writing data to file.'
 
     #Saving parametrs to file
     fc = open('data/findTx.txt', 'w')
@@ -164,7 +175,35 @@ def count_parametrs(rc):
         fc.write(str(asort) + '\n')
     fc.close()
 
+    print 'Making plots.'
+
+    #Making plots
+    try:
+        make_parametr_plot(xi, nyuAll, 'nyuLogLog')
+    except:
+        print 'nyuLogLog - error!'
+    try:
+        make_parametr_plot(xi, cAll, 'clusteringLogLog')
+    except:
+        print 'clusteringLogLog - error!'
+    try:
+        make_parametr_plot(xi, spAll, 'spLogLog')
+    except:
+        print 'spLogLog - error!'
+    try:
+        make_parametr_plot(xi, asortAll, 'asortLogLog')
+    except:
+        print 'asortLogLog - error!'
+
+    make_parametr_plot(xi, nyuAll, 'nyu', log=0)
+    make_parametr_plot(xi, cAll, 'clustering', log=0)
+    make_parametr_plot(xi, spAll, 'sp', log=0)
+    make_parametr_plot(xi, asortAll, 'asort', log=0)
+
+
 if __name__ == '__main__':
+
+    make_dir()
 
     count_rank_distribution()
 

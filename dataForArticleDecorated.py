@@ -6,6 +6,24 @@ import lib.generator as generator
 import lib.calculation as calculation
 import lib.graphics as graphics
 
+
+def make_dir():
+    import os
+
+    try:
+        os.makedirs('Graphics/')
+    except OSError:
+        pass
+    try:
+        os.makedirs('Graphics/article/')
+    except OSError:
+        pass
+    try:
+        os.makedirs('data')
+    except OSError:
+        pass
+
+
 def count_rank_distribution():
     G = generator.evolve_decorated_flower_adj(1, 2, 8, 0., 0.)
     graphics.make_rank_distribution(G)
@@ -14,11 +32,12 @@ def count_rank_distribution():
 
     print 'Made rank distribution'
 
+
 def count_rc():
     numberOfRealization = 1
     rcAll = []
 
-    for m in xrange(7, 12, 1):
+    for m in xrange(7, 17, 1):
 
         r = 0.8
         rc = 0
@@ -38,28 +57,29 @@ def count_rc():
             r += 0.01
 
     #Saving to file
-    fc = open('data/rcD.txt', 'w')
+    fc = open('data/rcDecor.txt', 'w')
     for rc in rcAll:
         fc.write(str(rc) + '\n')
     fc.close()
 
-    plt.plot(rcAll, range(5, 10, 1), 'ro')
-    fname = "Graphics/rcD.png"
+    plt.plot(rcAll, range(7, 17, 1), 'ro')
+    fname = "Graphics/rcDecor.png"
     plt.savefig(fname)
     plt.close('all')
 
-    print 'Find rc'
+    print 'Found rc'
     return rc
 
-def make_parametr_plot(xi, param, fileName, log = 1):
+
+def make_parametr_plot(xi, param, fileName, log=1):
 
     xi, param = graphics.remove_zeros(xi, param)
     param, xi = graphics.remove_zeros(param, xi)
 
     #Calculating least square
     length = len(xi)
-    startP = int(length*0.2)
-    endP = int(length*0.8)
+    startP = int(length * 0.2)
+    endP = int(length * 0.8)
     c, t = calculation.calculate_degree_least_square(xi[startP:endP], param[startP:endP])
 
     plt.title(str(t))
@@ -95,7 +115,9 @@ def count_parametrs(rc):
     asortAll = []
     asortAv = []
 
-    while r<1.:
+    print 'And now we have a lot of computations! Wait a week.'
+
+    while r < rc + 0.1:
         nyuAv = []
         cAv = []
         spAv = []
@@ -109,67 +131,91 @@ def count_parametrs(rc):
 #            spAv.append(nx.average_shortest_path_length(G))
             asortAv.append(nx.degree_assortativity_coefficient(G))
 
-        nyu = sum(nyuAv)/float(numberOfRealization)
-        c = sum(cAv)/float(numberOfRealization)
+        nyu = sum(nyuAv) / float(numberOfRealization)
+        c = sum(cAv) / float(numberOfRealization)
 #        sp = sum(spAv)/float(numberOfRealization)
-        asort = sum(asortAv)/float(numberOfRealization)
+        asort = sum(asortAv) / float(numberOfRealization)
 
         nyuAll.append(nyu)
         cAll.append(c)
 #        spAll.append(sp)
         asortAll.append(asort)
 
-        xi.append(float(r-rc)/rc)
+        xi.append(float(r - rc) / rc)
         r += 0.001
 
+    print 'Yes! It`s done! Writing data to file.'
+
     #Saving parametrs to file
-    fc = open('data/findTx.txt', 'w')
+    fc = open('data/findTxDecor.txt', 'w')
     for x in xi:
         fc.write(str(x) + '\n')
     fc.close()
 
-    fc = open('data/findTEtta.txt', 'w')
+    fc = open('data/findTEttaDecor.txt', 'w')
     for nyu in nyuAll:
         fc.write(str(nyu) + '\n')
     fc.close()
 
-    fc = open('data/findTc.txt', 'w')
+    fc = open('data/findTcDecor.txt', 'w')
     for c in cAll:
         fc.write(str(c) + '\n')
     fc.close()
 
-#    fc = open('data/findTsp.txt', 'w')
+#    fc = open('data/findTspDecor.txt', 'w')
 #    for sp in spAll:
 #        fc.write(str(sp) + '\n')
 #    fc.close()
 
-    fc = open('data/findTasort.txt', 'w')
+    fc = open('data/findTasortDecor.txt', 'w')
     for asort in asortAll:
         fc.write(str(asort) + '\n')
     fc.close()
 
-    make_parametr_plot(xi, nyuAll, 'nyuLogLog')
-    make_parametr_plot(xi, cAll, 'clusteringLogLog')
-#    make_parametr_plot(xi, spAll, 'spLogLog')
-    try:
-        make_parametr_plot(xi, asortAll, 'asortLogLog')
-    except:
-        pass
+    print 'Making plots.'
 
-    make_parametr_plot(xi, nyuAll, 'nyu', log = 0)
-    make_parametr_plot(xi, cAll, 'clustering', log = 0)
-#    make_parametr_plot(xi, spAll, 'sp', log = 0)
     try:
-        make_parametr_plot(xi, asortAll, 'asort', log = 0)
+        make_parametr_plot(xi, nyuAll, 'nyuLogLogDecor')
     except:
-        pass
+        print 'nyuLogLogDecor - error!'
+    try:
+        make_parametr_plot(xi, cAll, 'clusteringLogLogDecor')
+    except:
+        print 'clusteringLogLogDecor - error!'
+    try:
+        make_parametr_plot(xi, spAll, 'spLogLogDecor')
+    except:
+        print 'spLogLogDecor - error!'
+    try:
+        make_parametr_plot(xi, asortAll, 'asortLogLogDecor')
+    except:
+        print 'asortLogLogDecor - error!'
+
+    try:
+        make_parametr_plot(xi, nyuAll, 'nyuDecor', log=0)
+    except:
+        print 'nyuDecor - error!'
+    try:
+        make_parametr_plot(xi, cAll, 'clusteringDecor', log=0)
+    except:
+        print 'clusteringDecor - error!'
+    try:
+        make_parametr_plot(xi, spAll, 'spDecor', log=0)
+    except:
+        print 'spDecor - error!'
+    try:
+        make_parametr_plot(xi, asortAll, 'asortDecor', log=0)
+    except:
+        print 'asortDecor - error!'
 
 if __name__ == '__main__':
 
-#    count_rank_distribution()
+    make_dir()
 
-#    rc = count_rc()
-    rc = 0.9
+    count_rank_distribution()
+
+    rc = count_rc()
+
     count_parametrs(rc)
 
     print 'End'
