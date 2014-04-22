@@ -1,14 +1,17 @@
 # -*- coding: utf-8 *-*
-import matplotlib.pyplot as plt
 import networkx as nx
 
 import lib.generator as generator
 import lib.calculation as calculation
-import lib.graphics as graphics
+
 
 global n
-n = 5000
+global numberOfRealization
+global step
 
+n = 5000
+numberOfRealization = 10
+step = 0.01
 
 def make_dir():
     import os
@@ -27,20 +30,11 @@ def make_dir():
         pass
 
 
-def count_rank_distribution():
-    G = generator.evolve_ba_with_briebery(n, 20, 0, 3)
-    graphics.make_rank_distribution(G)
-    G = generator.evolve_ba_with_briebery(n, 20, 0.6, 3)
-    graphics.make_rank_distribution(G)
-
-    print 'Made rank distribution'
-
-
 def count_rc():
-    numberOfRealization = 10
+
     rcAll = []
 
-    for m in xrange(100, 10000, 500):
+    for m in xrange(100, n, 500):
 
         r = 0.49
         rc = 0
@@ -57,57 +51,26 @@ def count_rc():
                 rcAll.append(rc)
                 break
 
-            r += 0.001
+            r += step
 
     #Saving to file
-    fc = open('data/rc.txt', 'w')
+    fc = open('data/rc-y.txt', 'w')
     for rc in rcAll:
         fc.write(str(rc) + '\n')
     fc.close()
 
-    plt.plot(rcAll, range(100, 10000, 500), 'ro')
-    fname = "Graphics/rc.png"
-    plt.savefig(fname)
-    plt.close('all')
+    fc = open('data/rc-x.txt', 'w')
+    for x in xrange(100, n, 500):
+        fc.write(str(x) + '\n')
+    fc.close()
 
     print 'Found rc'
     return rc
 
 
-def make_parametr_plot(xi, param, fileName, log=1):
-
-    xi, param = graphics.remove_zeros(xi, param)
-    param, xi = graphics.remove_zeros(param, xi)
-
-    #Calculating least square
-    length = len(xi)
-    startP = int(length * 0.2)
-    endP = int(length * 0.8)
-    c, t = calculation.calculate_degree_least_square(xi[startP:endP], param[startP:endP])
-
-    plt.title(str(t))
-
-    #Making plot
-    if log:
-        plt.yscale('log')
-        plt.xscale('log')
-    plt.plot(xi, param, 'ro')
-
-    #Making approximation line
-    yi = []
-    for x in xi:
-        yi.append(c * (x ** t))
-    plt.plot(xi, yi, 'k')
-
-    fname = "Graphics/article/" + fileName + ".png"
-    plt.savefig(fname)
-    plt.close('all')
-
-
 def count_parametrs(rc):
     nyu = []
     xi = []
-    numberOfRealization = 10
     r = rc
     nyuAv = []
     nyuAll = []
@@ -145,70 +108,44 @@ def count_parametrs(rc):
         asortAll.append(asort)
 
         xi.append(float(r - rc) / rc)
-        r += 0.0001
+        r += step
 
     print 'Yes! It`s done! Writing data to file.'
 
     #Saving parametrs to file
-    fc = open('data/findTx.txt', 'w')
+    fc = open('data/x.txt', 'w')
     for x in xi:
         fc.write(str(x) + '\n')
     fc.close()
 
-    fc = open('data/findTEtta.txt', 'w')
+    fc = open('data/etta-razriv.txt', 'w')
     for nyu in nyuAll:
         fc.write(str(nyu) + '\n')
     fc.close()
 
-    fc = open('data/findTc.txt', 'w')
+    fc = open('data/clustering.txt', 'w')
     for c in cAll:
         fc.write(str(c) + '\n')
     fc.close()
 
-    fc = open('data/findTsp.txt', 'w')
+    fc = open('data/shortpath.txt', 'w')
     for sp in spAll:
         fc.write(str(sp) + '\n')
     fc.close()
 
-    fc = open('data/findTasort.txt', 'w')
+    fc = open('data/asortativity.txt', 'w')
     for asort in asortAll:
         fc.write(str(asort) + '\n')
     fc.close()
 
-    print 'Making plots.'
-
-    #Making plots
-    try:
-        make_parametr_plot(xi, nyuAll, 'nyuLogLog')
-    except:
-        print 'nyuLogLog - error!'
-    try:
-        make_parametr_plot(xi, cAll, 'clusteringLogLog')
-    except:
-        print 'clusteringLogLog - error!'
-    try:
-        make_parametr_plot(xi, spAll, 'spLogLog')
-    except:
-        print 'spLogLog - error!'
-    try:
-        make_parametr_plot(xi, asortAll, 'asortLogLog')
-    except:
-        print 'asortLogLog - error!'
-
-    make_parametr_plot(xi, nyuAll, 'nyu', log=0)
-    make_parametr_plot(xi, cAll, 'clustering', log=0)
-    make_parametr_plot(xi, spAll, 'sp', log=0)
-    make_parametr_plot(xi, asortAll, 'asort', log=0)
-
 
 if __name__ == '__main__':
-
     make_dir()
 
-    count_rank_distribution()
+    # count_rank_distribution()
 
-    rc = count_rc()
-
+    # rc = count_rc()
+    rc = 0.51
     count_parametrs(rc)
 
     print 'End'
