@@ -245,12 +245,8 @@ def evolve_decorated_flower_adj(x, y, n, r = 0. , p = 0.):
         numberOfEdges = []
         numberOfEdges.append(1)
 
-        if (x+y) == 3:
-            for i in xrange(1, n):
-                numberOfEdges.append(numberOfEdges[-1]*(x+y))
-        else:
-            for i in xrange(1, n):
-                numberOfEdges.append(numberOfEdges[-1]*(x+y+1))
+        for i in xrange(1, n):
+            numberOfEdges.append(numberOfEdges[-1]*(x+y))
 
         numberOfNodes = []
         numberOfNodes.append(2)
