@@ -1,10 +1,11 @@
 # -*- coding: utf-8 *-*
-import matplotlib.pyplot as plt
 import networkx as nx
 
 import lib.generator as generator
 import lib.calculation as calculation
-import lib.graphics as graphics
+
+numberOfRealization = 5
+generation = 10
 
 
 def make_dir():
@@ -23,23 +24,12 @@ def make_dir():
     except OSError:
         pass
 
-
-def count_rank_distribution():
-    G = generator.evolve_decorated_flower_adj(1, 2, 8, 0., 0.)
-    graphics.make_rank_distribution(G)
-    G = generator.evolve_decorated_flower_adj(1, 2, 8, 0.95, 0.)
-    graphics.make_rank_distribution(G)
-
-    print 'Made rank distribution'
-
-
 def count_rc():
-    numberOfRealization = 1
     rcAll = []
 
-    for m in xrange(7, 17, 1):
+    for m in xrange(7, 15, 1):
 
-        r = 0.8
+        r = 0.84
         rc = 0
 
         while r < 1:
@@ -53,7 +43,7 @@ def count_rc():
             if rc:
                 rcAll.append(rc)
                 break
-
+            print rcAll, r
             r += 0.01
 
     #Saving to file
@@ -62,49 +52,14 @@ def count_rc():
         fc.write(str(rc) + '\n')
     fc.close()
 
-    plt.plot(rcAll, range(7, 17, 1), 'ro')
-    fname = "Graphics/rcDecor.png"
-    plt.savefig(fname)
-    plt.close('all')
 
     print 'Found rc'
     return rc
 
 
-def make_parametr_plot(xi, param, fileName, log=1):
-
-    xi, param = graphics.remove_zeros(xi, param)
-    param, xi = graphics.remove_zeros(param, xi)
-
-    #Calculating least square
-    length = len(xi)
-    startP = int(length * 0.2)
-    endP = int(length * 0.8)
-    c, t = calculation.calculate_degree_least_square(xi[startP:endP], param[startP:endP])
-
-    plt.title(str(t))
-
-    #Making plot
-    if log:
-        plt.yscale('log')
-        plt.xscale('log')
-    plt.plot(xi, param, 'ro')
-
-    #Making approximation line
-    yi = []
-    for x in xi:
-        yi.append(c * (x ** t))
-    plt.plot(xi, yi, 'k')
-
-    fname = "Graphics/article/" + fileName + ".png"
-    plt.savefig(fname)
-    plt.close('all')
-
-
 def count_parametrs(rc):
     nyu = []
     xi = []
-    numberOfRealization = 10
     r = rc
     nyuAv = []
     nyuAll = []
@@ -124,21 +79,24 @@ def count_parametrs(rc):
         asortAv = []
 
         for i in xrange(numberOfRealization):
-            G = generator.evolve_decorated_flower_adj(1, 2, 10, r, 0.)
+            G = generator.evolve_decorated_flower_adj(1, 2, generation, r, 0.)
 
             nyuAv.append(calculation.calculate_nyu_decorated(G))
             cAv.append(nx.average_clustering(G))
-#            spAv.append(nx.average_shortest_path_length(G))
+            spComponent = 0
+            for spGraph in nx.connected_component_subgraphs(G):
+                spComponent += nx.average_shortest_path_length(spGraph)
+            spAv.append(float(spComponent) / len(nx.connected_component_subgraphs(G)))
             asortAv.append(nx.degree_assortativity_coefficient(G))
 
         nyu = sum(nyuAv) / float(numberOfRealization)
         c = sum(cAv) / float(numberOfRealization)
-#        sp = sum(spAv)/float(numberOfRealization)
+        sp = sum(spAv) / float(numberOfRealization)
         asort = sum(asortAv) / float(numberOfRealization)
 
         nyuAll.append(nyu)
         cAll.append(c)
-#        spAll.append(sp)
+        spAll.append(sp)
         asortAll.append(asort)
 
         xi.append(float(r - rc) / rc)
@@ -162,60 +120,25 @@ def count_parametrs(rc):
         fc.write(str(c) + '\n')
     fc.close()
 
-#    fc = open('data/findTspDecor.txt', 'w')
-#    for sp in spAll:
-#        fc.write(str(sp) + '\n')
-#    fc.close()
+    fc = open('data/findTspDecor.txt', 'w')
+    for sp in spAll:
+        fc.write(str(sp) + '\n')
+    fc.close()
 
     fc = open('data/findTasortDecor.txt', 'w')
     for asort in asortAll:
         fc.write(str(asort) + '\n')
     fc.close()
 
-    print 'Making plots.'
 
-    try:
-        make_parametr_plot(xi, nyuAll, 'nyuLogLogDecor')
-    except:
-        print 'nyuLogLogDecor - error!'
-    try:
-        make_parametr_plot(xi, cAll, 'clusteringLogLogDecor')
-    except:
-        print 'clusteringLogLogDecor - error!'
-    try:
-        make_parametr_plot(xi, spAll, 'spLogLogDecor')
-    except:
-        print 'spLogLogDecor - error!'
-    try:
-        make_parametr_plot(xi, asortAll, 'asortLogLogDecor')
-    except:
-        print 'asortLogLogDecor - error!'
-
-    try:
-        make_parametr_plot(xi, nyuAll, 'nyuDecor', log=0)
-    except:
-        print 'nyuDecor - error!'
-    try:
-        make_parametr_plot(xi, cAll, 'clusteringDecor', log=0)
-    except:
-        print 'clusteringDecor - error!'
-    try:
-        make_parametr_plot(xi, spAll, 'spDecor', log=0)
-    except:
-        print 'spDecor - error!'
-    try:
-        make_parametr_plot(xi, asortAll, 'asortDecor', log=0)
-    except:
-        print 'asortDecor - error!'
 
 if __name__ == '__main__':
-
     make_dir()
 
-    count_rank_distribution()
+    # count_rank_distribution()
 
     rc = count_rc()
-
+    # rc = 0.89
     count_parametrs(rc)
-
+    # print rc
     print 'End'
