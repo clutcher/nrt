@@ -27,18 +27,15 @@ def calculate_nyu_decorated(aGraph):
         nyu ~ (r-rc)^t for decorated flowers
     """
     nyu = 0
-    inedexes = []
+    degreeDif = []
     yi = list(aGraph.degree().values())
+    yi = list(set(yi))
     yi.sort()
-    yi.reverse()
-    for degree in xrange(1,15):
-        try:
-            inedexes.append(yi.index(degree))
-        except:
-            continue
-    minIndex = min(inedexes)
-    nyu = yi[minIndex-1] - yi[minIndex]
-    if nyu < 4:
+    # yi.reverse()
+    for i in xrange(len(yi)/2):
+        degreeDif.append(yi[i+1]-yi[i])
+    nyu = max(degreeDif)
+    if max(degreeDif) < 4:
         nyu = 0
     return nyu
 

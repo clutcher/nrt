@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Network generator"""
 
-import networkx as nx
 import random
+
+import networkx as nx
 
 
 def calculate_average_degree(aGraph):
@@ -40,11 +41,11 @@ def evolve_ba_removing_edges(m, m0, n, r, p):
         m0 - number of initial nodes
         n - number of edges of each new node
     """
-    #Initializing graph
+    # Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
     name = "ba_m=" + repr(m) + "_n=" + repr(n) + \
-    "_r=" + repr(r) + "_p=" + repr(p)
+           "_r=" + repr(r) + "_p=" + repr(p)
     aGraph.name = name
 
     #Add first m0 nodes
@@ -80,7 +81,7 @@ def evolve_ba_removing_edges(m, m0, n, r, p):
     return aGraph
 
 
-def evolve_ba_with_briebery(m, m0, r, n, di = 0, p = 0):
+def evolve_ba_with_briebery(m, m0, r, n, di=0, p=0):
     """Barabasi-Albert model generator
         Adding nodes
         m - number of nodes to evolve
@@ -90,14 +91,14 @@ def evolve_ba_with_briebery(m, m0, r, n, di = 0, p = 0):
         di - 1 -make directed graph, 0 - usual graph
         p - probabilty of not concidering parametr r
     """
-    #Initializing graph
+    # Initializing graph
     if di:
         aGraph = nx.DiGraph()
     else:
         aGraph = nx.Graph()
     aGraph.probability = {}
     name = "ba_m=" + repr(m) + "_r=" + repr(r) + \
-    "_n=" + repr(n) + "_p=" + repr(p)
+           "_n=" + repr(n) + "_p=" + repr(p)
     aGraph.name = name
 
     #Add first m0 nodes
@@ -122,7 +123,7 @@ def evolve_ba_with_briebery(m, m0, r, n, di = 0, p = 0):
             for i in xrange(n1):
                 #Add degrees
                 if (random.random() <= aGraph.probability[i]) \
-                and ((aGraph.degree(i) >= rnorm) or random.random() <= p):
+                        and ((aGraph.degree(i) >= rnorm) or random.random() <= p):
                     aGraph.add_edge(new, i)
                     if aGraph.degree(new) == n:
                         break
@@ -136,7 +137,7 @@ def evolve_ba_with_briebery(m, m0, r, n, di = 0, p = 0):
     return aGraph
 
 
-def evolve_ba_with_briebery_adj(m, m0, r, n, di = 0, p = 0):
+def evolve_ba_with_briebery_adj(m, m0, r, n, di=0, p=0):
     """ Barabasi-Albert model generator
          Adding nodes
          m - number of nodes to evolve
@@ -149,7 +150,7 @@ def evolve_ba_with_briebery_adj(m, m0, r, n, di = 0, p = 0):
     edgeList = []
     edgeNumber = (m - m0) * n
 
-    #Because matrix index are from 0 to m-1
+    # Because matrix index are from 0 to m-1
     m = m - 1
     briebery = (1 - r) * 2 * m
     while edgeNumber > 0:
@@ -160,7 +161,7 @@ def evolve_ba_with_briebery_adj(m, m0, r, n, di = 0, p = 0):
 
     aGraph = nx.from_edgelist(edgeList)
     name = "ba_adj_m=" + repr(m) + "_r=" + repr(r) + \
-    "_n=" + repr(n) + "_p=" + repr(p)
+           "_n=" + repr(n) + "_p=" + repr(p)
     aGraph.name = name
     return aGraph
 
@@ -173,11 +174,11 @@ def evolve_decorated_flower(x, y, n):
 
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
-    #Initializing graph
+    # Initializing graph
     aGraph = nx.Graph()
     aGraphRemovedEdges = nx.Graph()
     name = "flower_decor_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n)
+           "_n=" + repr(n)
     aGraph.name = name
 
     #Add first 2 nodes and 1 edge
@@ -231,7 +232,8 @@ def evolve_decorated_flower(x, y, n):
     aGraph.add_edges_from(e for e in aGraphRemovedEdges.edges_iter(data=True))
     return aGraph
 
-def evolve_decorated_flower_adj(x, y, n, r = 0. , p = 0.):
+
+def evolve_decorated_flower_adj(x, y, n, r=0., p=0.):
     """(x,y) flower network generator by adjacency matrix
         x, y - number of nodes on edges
         n - number of transformation of all edges
@@ -243,57 +245,86 @@ def evolve_decorated_flower_adj(x, y, n, r = 0. , p = 0.):
 
     def numberOfEdgesAndNodes():
         numberOfEdges = []
-        numberOfEdges.append(1)
+        numberOfEdges.append(3)
 
         for i in xrange(1, n):
-            numberOfEdges.append(numberOfEdges[-1]*(x+y))
+            numberOfEdges.append(numberOfEdges[-1] * (x + y))
 
         numberOfNodes = []
-        numberOfNodes.append(2)
-        for i in xrange(1,n):
-            numberOfNodes.append(numberOfNodes[-1] + numberOfEdges[i-1]*(x+y-2))
+        numberOfNodes.append(3)
+        for i in xrange(1, n):
+            numberOfNodes.append((x+y)*numberOfNodes[-1]-(x+y))
         return numberOfNodes, numberOfEdges
 
 
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
-    p = 1 -p
-    numNodes, numEdges = numberOfEdgesAndNodes()
 
-    #Adjacency matrix is simmetric, so
-    #we will work with bottom triangle matrix
+    # Generate init generation
     edgeList = []
-    edgeList.append([1, 0])
-    for i in xrange(1, n):
+    edgeList.append([1, 4])
+    edgeList.append([1, 3])
+    edgeList.append([1, 2])
+    edgeList.append([1, 6])
+    edgeList.append([2, 3])
+    edgeList.append([2, 5])
+    edgeList.append([2, 6])
+    edgeList.append([3, 4])
+    edgeList.append([3, 5])
+
+    numNodes, numEdges = numberOfEdgesAndNodes()
+    # print numNodes, numEdges
+    for i in xrange(2, n):
+        # print i
+        squareR = math.trunc(r * numNodes[i - 1])
         while len(edgeList) < numEdges[i]:
-            #numNodes - list with number of nodes
-            #adjacency marix has numeration from 0
-            #so there is -1
+            xI = random.randint(numNodes[i - 1], numNodes[i])
+            if (2 * numNodes[i - 1] - numNodes[i - 2]) < xI < (numNodes[i] - squareR):
+                yI = random.randint(1, numNodes[i - 1])
+            elif xI <= (2 * numNodes[i - 1] - numNodes[i - 2]):
+                yI = random.randint(1, numNodes[i - 1] - numNodes[i - 2])
+            elif xI >= (numNodes[i] - squareR):
+                yI = random.randint(1, numNodes[i-1] - squareR)
+            if [xI, yI] not in edgeList:
+                edgeList.append([xI, yI])
 
-            #Don`t add connection in R square
-            # -1 to avoid mistakes on first step generating
-            squareR = math.trunc(r*numNodes[i-1] - 1)
 
-            xI = random.randint(numNodes[i-1] + 1 - 1, numNodes[i]-1)
-            if xI > (numNodes[i]-1-squareR*1.5):
-                yI = random.randint(0, numNodes[i-1]-1 - squareR)
-            else:
-                yI = random.randint(0, numNodes[i-1]-1)
-
-            if yI < numNodes[i-1]/4:
-#            if (numNodes[i-1] + numNodes[i])*0.9/2 < (xI + yI) < (numNodes[i-1] + numNodes[i])*1.1/2:
-                if [xI,yI] not in edgeList:
-                    edgeList.append([xI, yI])
-            elif random.random() < p:
-                if [xI,yI] not in edgeList:
-                    edgeList.append([xI, yI])
-
+#     p = 1 -p
+#     numNodes, numEdges = numberOfEdgesAndNodes()
+#
+#     #Adjacency matrix is simmetric, so
+#     #we will work with bottom triangle matrix
+#     edgeList = []
+#     edgeList.append([1, 0])
+#     for i in xrange(1, n):
+#         while len(edgeList) < numEdges[i]:
+#             #numNodes - list with number of nodes
+#             #adjacency marix has numeration from 0
+#             #so there is -1
+#
+#             #Don`t add connection in R square
+#             # -1 to avoid mistakes on first step generating
+#             squareR = math.trunc(r*numNodes[i-1] - 1)
+#
+#             xI = random.randint(numNodes[i-1] + 1 - 1, numNodes[i]-1)
+#             if xI > (numNodes[i]-1-squareR*1.5):
+#                 yI = random.randint(0, numNodes[i-1]-1 - squareR)
+#             else:
+#                 yI = random.randint(0, numNodes[i-1]-1)
+#
+#             if yI < numNodes[i-1]/4:
+# #            if (numNodes[i-1] + numNodes[i])*0.9/2 < (xI + yI) < (numNodes[i-1] + numNodes[i])*1.1/2:
+#                 if [xI,yI] not in edgeList:
+#                     edgeList.append([xI, yI])
+#             elif random.random() < p:
+#                 if [xI,yI] not in edgeList:
+#                     edgeList.append([xI, yI])
+#
     aGraph = nx.from_edgelist(edgeList)
     name = "flower_decor_adj_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n) + "_r=" + repr(r)
+           "_n=" + repr(n) + "_r=" + repr(r)
     aGraph.name = name
     return aGraph
-
 
 
 def evolve_flower(x, y, n):
@@ -303,10 +334,10 @@ def evolve_flower(x, y, n):
     """
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
-    #Initializing graph
+    # Initializing graph
     aGraph = nx.Graph()
     name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n)
+           "_n=" + repr(n)
     aGraph.name = name
 
     #Add first 2 nodes and 1 edge
@@ -360,7 +391,7 @@ def evolve_flower(x, y, n):
     return aGraph
 
 
-def evolve_flower_removing_edges(x, y, n, r = 0, p = 0):
+def evolve_flower_removing_edges(x, y, n, r=0, p=0):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
@@ -369,11 +400,11 @@ def evolve_flower_removing_edges(x, y, n, r = 0, p = 0):
     """
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
-    #Initializing graph
+    # Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
     name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n) + "_r=" + repr(r)
+           "_n=" + repr(n) + "_r=" + repr(r)
     aGraph.name = name
 
     #Add first 2 nodes and 1 edge
@@ -427,7 +458,7 @@ def evolve_flower_removing_edges(x, y, n, r = 0, p = 0):
     return aGraph
 
 
-def evolve_flower_with_briebery(x, y, n, r = 0, p = 0):
+def evolve_flower_with_briebery(x, y, n, r=0, p=0):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
@@ -436,11 +467,11 @@ def evolve_flower_with_briebery(x, y, n, r = 0, p = 0):
     """
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
-    #Initializing graph
+    # Initializing graph
     aGraph = nx.Graph()
     aGraph.probability = {}
     name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
-    "_n=" + repr(n) + "_r=" + repr(r)
+           "_n=" + repr(n) + "_r=" + repr(r)
     aGraph.name = name
 
     #Add first 2 nodes and 1 edge

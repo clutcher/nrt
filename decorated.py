@@ -29,13 +29,13 @@ if __name__ == '__main__':
     #plt.plot(frequency.keys(), frequency.values(), 'ro')
     #plt.show()
 
-    r = 0.99
-    while r<1:
-        G = generator.evolve_decorated_flower_adj(1, 2, 10, r, 0.)
-        nyutemp = calculation.calculate_nyu_decorated(G)
-        print r, nyutemp
-        print len(G)
-        r += 0.01
+    # r = 0.99
+    # while r<1:
+    #     G = generator.evolve_decorated_flower_adj(1, 2, 10, r, 0.)
+    #     nyutemp = calculation.calculate_nyu_decorated(G)
+    #     print r, nyutemp
+    #     print len(G)
+    #     r += 0.01
 #        graphics.make_rank_distribution(G)
 #    graphics.make_probability_graphic(G)
 ##    graphics.make_graph(G)
@@ -52,3 +52,17 @@ if __name__ == '__main__':
 #    matrix.write_image_from_matrix(G2)
 #    G3 = generator.evolve_ba_with_briebery(1000, 20, 0, 3)
 #    matrix.write_image_from_matrix(G3)
+    r = 0.51
+#     maxAll = []
+#     minAll = []
+    while r<0.92:
+        G = generator.evolve_decorated_flower_adj(1, 2, 7, r)
+        dgr = calculation.calculate_nyu_decorated(G)
+        graphics.make_rank_distribution(G)
+        print r,  dgr
+        r += 0.1
+    G = generator.evolve_decorated_flower_adj(1, 2, 7, 0.99)
+    graphics.make_rank_distribution(G)
+    #     print r
+    # print minAll
+    # print maxAll

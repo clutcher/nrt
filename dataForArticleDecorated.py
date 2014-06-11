@@ -5,6 +5,7 @@ import lib.generator as generator
 import lib.calculation as calculation
 
 numberOfRealization = 5
+numberOfRealizationRc = 1
 generation = 10
 
 
@@ -27,14 +28,14 @@ def make_dir():
 def count_rc():
     rcAll = []
 
-    for m in xrange(7, 15, 1):
+    for m in xrange(7, 12, 1):
 
         r = 0.84
         rc = 0
 
         while r < 1:
 
-            for i in xrange(numberOfRealization):
+            for i in xrange(numberOfRealizationRc):
                 G = generator.evolve_decorated_flower_adj(1, 2, m, r, 0.)
                 nyutemp = calculation.calculate_nyu_decorated(G)
                 if nyutemp:
@@ -43,9 +44,8 @@ def count_rc():
             if rc:
                 rcAll.append(rc)
                 break
-            print rcAll, r
             r += 0.01
-
+        print rcAll
     #Saving to file
     fc = open('data/rcDecor.txt', 'w')
     for rc in rcAll:
@@ -139,6 +139,6 @@ if __name__ == '__main__':
 
     rc = count_rc()
     # rc = 0.89
-    count_parametrs(rc)
-    # print rc
+    # count_parametrs(rc)
+    print rc
     print 'End'

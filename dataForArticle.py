@@ -9,9 +9,10 @@ global n
 global numberOfRealization
 global step
 
-n = 5000
-numberOfRealization = 10
+n = 1000
+numberOfRealization = 5
 step = 0.01
+
 
 def make_dir():
     import os
@@ -31,7 +32,6 @@ def make_dir():
 
 
 def count_rc():
-
     rcAll = []
 
     for m in xrange(100, n, 500):
@@ -71,7 +71,7 @@ def count_rc():
 def count_parametrs(rc):
     nyu = []
     xi = []
-    r = rc
+    r = 0.0
     nyuAv = []
     nyuAll = []
     cAll = []
@@ -83,7 +83,7 @@ def count_parametrs(rc):
 
     print 'And now we have a lot of computations! Wait a week.'
 
-    while r < rc + 0.1:
+    while r < 0.9:
         nyuAv = []
         cAv = []
         spAv = []
@@ -107,8 +107,12 @@ def count_parametrs(rc):
         spAll.append(sp)
         asortAll.append(asort)
 
-        xi.append(float(r - rc) / rc)
-        r += step
+        # xi.append(float(r - rc) / rc)
+        xi.append(r)
+        if 0.40 <= r <= 0.60:
+            r += step
+        else:
+            r += 0.1
 
     print 'Yes! It`s done! Writing data to file.'
 

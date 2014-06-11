@@ -1,4 +1,4 @@
-x = 3
+x = 1
 y = 2
 def numberOfEdgesAndNodes(n):
     numberOfEdges = []
@@ -30,5 +30,5 @@ def numberOfEdgesAndNodesRozenfeld(n):
         numberOfNodes.append((x+y)*numberOfNodes[-1] - (x+y))
     return numberOfNodes, numberOfEdges
 
-print numberOfEdgesAndNodes(20)
-print numberOfEdgesAndNodesRozenfeld(20)
+print numberOfEdgesAndNodes(15)
+print numberOfEdgesAndNodesRozenfeld(15)
