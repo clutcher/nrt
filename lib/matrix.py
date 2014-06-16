@@ -7,7 +7,7 @@ import os
 #Function to write a bmp file.  It takes a dictionary (d) of
 #header values and the pixel data (bytes) and writes them
 #to a file.  This function is called at the bottom of the code.
-def bmp_write(d, the_bytes, aGraph):
+def bmp_write(d, the_bytes, aGraph, name):
     mn1 = struct.pack('<B',d['mn1'])
     mn2 = struct.pack('<B',d['mn2'])
     filesize = struct.pack('<L',d['filesize'])
@@ -30,7 +30,10 @@ def bmp_write(d, the_bytes, aGraph):
         os.makedirs('Graphics/adj')
     except OSError:
         pass
-    fname = "Graphics/adj/" + aGraph.name + ".bmp"
+    if name:
+        fname = "Graphics/adj/" + name + ".bmp"
+    else:
+        fname = "Graphics/adj/" + aGraph.name + ".bmp"
     outfile = open(fname,'wb')
     #write the header + the_bytes
     outfile.write(mn1+mn2+filesize+undef1+undef2+offset+headerlength+width+height+\
@@ -39,7 +42,7 @@ def bmp_write(d, the_bytes, aGraph):
     outfile.close()
 
 
-def write_image_from_matrix(aGraph):
+def write_image_from_matrix(aGraph, name = None):
     import networkx as nx
     #Here is a minimal dictionary with header values.
     #Of importance is the offset, headerlength, width,
@@ -103,4 +106,4 @@ def write_image_from_matrix(aGraph):
     #call the bmp_write function with the
     #dictionary of header values and the
     #bytes created above.
-    bmp_write(d, the_bytes, aGraph)
+    bmp_write(d, the_bytes, aGraph, name)
