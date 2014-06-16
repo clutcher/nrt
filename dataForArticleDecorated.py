@@ -136,7 +136,14 @@ def count_parametrs(rc):
         fc.write(str(asort) + '\n')
     fc.close()
 
-
+    fX = open('data/eta_findTxDecor.txt', 'w')
+    fE = open('data/etafindTEttaDecor.txt', 'w')
+    for i, nyu in enumerate(nyuAll):
+        if nyu != 0:
+            fE.write(str(nyu) + '\n')
+            fX.write(str(xi[i]) + '\n')
+    fX.close()
+    fE.close()
 
 if __name__ == '__main__':
     make_dir()
