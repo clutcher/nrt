@@ -143,6 +143,7 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
+    plt.show()
     plt.close('all')
 
 

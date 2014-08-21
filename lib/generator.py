@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Network generator"""
+# @ToDO: Extremly need full refactor of this module.
 
 import random
 
@@ -48,17 +49,17 @@ def evolve_ba_removing_edges(m, m0, n, r, p):
            "_r=" + repr(r) + "_p=" + repr(p)
     aGraph.name = name
 
-    #Add first m0 nodes
+    # Add first m0 nodes
     aGraph.add_node(0)
     for new in xrange(1, m0):
         aGraph.add_node(new)
         aGraph.add_edge(new - 1, new)
-    #Calculating probability for first m0 nodes
+    # Calculating probability for first m0 nodes
     sumk = float(aGraph.number_of_edges() * 2)
     for k in xrange(m0):
         aGraph.probability[k] = aGraph.degree(k) / sumk
 
-    #Generating new nodes
+    # Generating new nodes
     for new in xrange(m0, m):
         #Add new node
         aGraph.add_node(new)
@@ -101,17 +102,17 @@ def evolve_ba_with_briebery(m, m0, r, n, di=0, p=0):
            "_n=" + repr(n) + "_p=" + repr(p)
     aGraph.name = name
 
-    #Add first m0 nodes
+    # Add first m0 nodes
     aGraph.add_node(0)
     for new in xrange(1, m0):
         aGraph.add_node(new)
         aGraph.add_edge(new - 1, new)
-    #Calculating probability for first m0 nodes
+    # Calculating probability for first m0 nodes
     sumk = float(aGraph.number_of_edges() * 2)
     for k in xrange(m0):
         aGraph.probability[k] = aGraph.degree(k) / sumk
 
-    #Generating new nodes
+    # Generating new nodes
     avdegr = calculate_average_degree(aGraph)
     #Normalizing r = r * average_degree
     rnorm = r * avdegr
@@ -181,14 +182,14 @@ def evolve_decorated_flower(x, y, n):
            "_n=" + repr(n)
     aGraph.name = name
 
-    #Add first 2 nodes and 1 edge
+    # Add first 2 nodes and 1 edge
     aGraph.add_node(0)
     aGraph.add_node(1)
     aGraph.add_edge(0, 1)
 
-    #Generating new nodes
+    # Generating new nodes
     for iterations in xrange(1, n):
-        #List of edges
+        # List of edges
         edges = aGraph.edges()
 
         for edge in edges:
@@ -233,11 +234,11 @@ def evolve_decorated_flower(x, y, n):
     return aGraph
 
 
-def evolve_decorated_flower_adj(x, y, n, r=0., p=0.):
+def evolve_decorated_flower_adj(x, y, n, r=0., p=0.8):
     """(x,y) flower network generator by adjacency matrix
         x, y - number of nodes on edges
         n - number of transformation of all edges
-        p - probability of eding edge in area
+        p - probability of offset
         r - briebery
     """
 
@@ -253,9 +254,40 @@ def evolve_decorated_flower_adj(x, y, n, r=0., p=0.):
         numberOfNodes = []
         numberOfNodes.append(3)
         for i in xrange(1, n):
-            numberOfNodes.append((x+y)*numberOfNodes[-1]-(x+y))
+            numberOfNodes.append((x + y) * numberOfNodes[-1] - (x + y))
         return numberOfNodes, numberOfEdges
 
+    def get_yi(xI):
+        if xI > (numNodes[i] - exceptiveRx):
+            yI = random.randint(1, numNodes[i - 1] - exceptiveRy)
+        elif xI < (numNodes[i - 1] + numNodes[i - 2]):
+            yI = random.randint(1, numNodes[i - 1] - numNodes[i - 2])
+            # yI = random.randint(1, numNodes[i - 1])
+        else:
+            yI = random.randint(1, numNodes[i - 1])
+
+        # if xI > (numNodes[i] - exceptiveRx):;/OO;;llllllllllllllllllllllllllllllllllllllllll mmmmmmmmmmmm
+        # if (numNodes[i-1]-exceptiveRy)>numNodes[i-2]:
+        #         if random.random()<p:
+        #             yI = random.randint(1, numNodes[i-2])
+        #         else:
+        #             yI = random.randint(1, numNodes[i-1]-exceptiveRy)
+        #     else:
+        #         yI = random.randint(1, numNodes[i-1]-exceptiveRy)
+        # elif xI < (numNodes[i - 1] + numNodes[i - 2]):
+        #     if (numNodes[i - 1]-numNodes[i-2])>numNodes[i-2]:
+        #         if random.random()<p:
+        #             yI = random.randint(1, numNodes[i-2])
+        #         else:
+        #             yI = random.randint(1, numNodes[i - 1]-numNodes[i-2])
+        #     else:
+        #         yI = random.randint(1, numNodes[i - 1]-numNodes[i-2])
+        # else:
+        #     if random.random()<p:
+        #         yI = random.randint(1, numNodes[i-2])
+        #     else:
+        #         yI = random.randint(1, numNodes[i - 1])
+        return yI
 
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
@@ -275,51 +307,34 @@ def evolve_decorated_flower_adj(x, y, n, r=0., p=0.):
     numNodes, numEdges = numberOfEdgesAndNodes()
     # print numNodes, numEdges
     for i in xrange(2, n):
-        # print i
+        exceptiveRy = math.trunc(r * numNodes[i - 1])
+        # exceptiveRx = math.trunc(r * numNodes[i - 1])
+        exceptiveRx = math.trunc(r * (numNodes[i] - numNodes[i - 1]))
         squareR = math.trunc(r * numNodes[i - 1])
+        for xI in xrange(numNodes[i - 1], numNodes[i] + 1):
+            yI = get_yi(xI)
+            edgeList.append([xI, yI])
+
         while len(edgeList) < numEdges[i]:
             xI = random.randint(numNodes[i - 1], numNodes[i])
-            if (2 * numNodes[i - 1] - numNodes[i - 2]) < xI < (numNodes[i] - squareR):
-                yI = random.randint(1, numNodes[i - 1])
-            elif xI <= (2 * numNodes[i - 1] - numNodes[i - 2]):
-                yI = random.randint(1, numNodes[i - 1] - numNodes[i - 2])
-            elif xI >= (numNodes[i] - squareR):
-                yI = random.randint(1, numNodes[i-1] - squareR)
+            yI = get_yi(xI)
+
+            # if (2 * numNodes[i - 1] - numNodes[i - 2]) < xI < (numNodes[i] - squareR):
+            # if random.random() < p:
+            #         yI = random.randint(1, numNodes[i - 2])
+            #     else:
+            #         yI = random.randint(numNodes[i - 2], numNodes[i - 1])
+            # elif xI <= (2 * numNodes[i - 1] - numNodes[i - 2]):
+            #     if random.random() < p:
+            #         yI = random.randint(1, numNodes[i - 2])
+            #     else:
+            #         yI = random.randint(numNodes[i - 2], numNodes[i - 1] - numNodes[i - 2])
+            # elif xI >= (numNodes[i] - squareR):
+            #     yI = random.randint(1, numNodes[i - 1] - squareR)
+            #
             if [xI, yI] not in edgeList:
                 edgeList.append([xI, yI])
 
-
-#     p = 1 -p
-#     numNodes, numEdges = numberOfEdgesAndNodes()
-#
-#     #Adjacency matrix is simmetric, so
-#     #we will work with bottom triangle matrix
-#     edgeList = []
-#     edgeList.append([1, 0])
-#     for i in xrange(1, n):
-#         while len(edgeList) < numEdges[i]:
-#             #numNodes - list with number of nodes
-#             #adjacency marix has numeration from 0
-#             #so there is -1
-#
-#             #Don`t add connection in R square
-#             # -1 to avoid mistakes on first step generating
-#             squareR = math.trunc(r*numNodes[i-1] - 1)
-#
-#             xI = random.randint(numNodes[i-1] + 1 - 1, numNodes[i]-1)
-#             if xI > (numNodes[i]-1-squareR*1.5):
-#                 yI = random.randint(0, numNodes[i-1]-1 - squareR)
-#             else:
-#                 yI = random.randint(0, numNodes[i-1]-1)
-#
-#             if yI < numNodes[i-1]/4:
-# #            if (numNodes[i-1] + numNodes[i])*0.9/2 < (xI + yI) < (numNodes[i-1] + numNodes[i])*1.1/2:
-#                 if [xI,yI] not in edgeList:
-#                     edgeList.append([xI, yI])
-#             elif random.random() < p:
-#                 if [xI,yI] not in edgeList:
-#                     edgeList.append([xI, yI])
-#
     aGraph = nx.from_edgelist(edgeList)
     name = "flower_decor_adj_x=" + repr(x) + "_y=" + repr(y) + \
            "_n=" + repr(n) + "_r=" + repr(r)
@@ -340,14 +355,14 @@ def evolve_flower(x, y, n):
            "_n=" + repr(n)
     aGraph.name = name
 
-    #Add first 2 nodes and 1 edge
+    # Add first 2 nodes and 1 edge
     aGraph.add_node(0)
     aGraph.add_node(1)
     aGraph.add_edge(0, 1)
 
-    #Generating new nodes
+    # Generating new nodes
     for iterations in xrange(1, n):
-        #List of edges
+        # List of edges
         edges = aGraph.edges()
 
         for edge in edges:
@@ -391,32 +406,114 @@ def evolve_flower(x, y, n):
     return aGraph
 
 
-def evolve_flower_removing_edges(x, y, n, r=0, p=0):
+def evolve_flower_removing_edges(x, y, n, r=0):
     """(x,y) flower network generator
         x, y - number of nodes on edges
         n - number of transformation of all edges
-        r - coeficient of bribery
-        p - probabilty of not concidering parametr r
     """
+    import numpy as np
+    import math
+    from scipy import sparse
+
+    def numberOfEdgesAndNodes(startEdge, startNode):
+        numberOfEdges = []
+        numberOfEdges.append(startEdge)
+        for i in xrange(1, n):
+            numberOfEdges.append(numberOfEdges[-1] * (x + y))
+
+        numberOfNodes = []
+        numberOfNodes.append(startNode)
+        for i in xrange(1, n):
+            numberOfNodes.append((x + y) * numberOfNodes[-1] - (x + y))
+        return numberOfNodes, numberOfEdges
+
+
+
+    def remove_edges():
+        adj = nx.adjacency_matrix(aGraph)
+        adj_temp = adj.nonzero()
+        row = adj_temp[0]
+        col = adj_temp[1]
+
+        removedItems = []
+
+        for gen in xrange(2, n):
+            item = 0
+            len_adj = row.shape[0]
+
+            xMin = -1 + numberOfNodes[gen] - r * (numberOfNodes[gen] - numberOfNodes[gen-1])
+            xMax = -1 + numberOfNodes[gen]
+            yMin = -1 + numberOfNodes[gen-1] - r * numberOfNodes[gen-1]
+            yMax = -1 + numberOfNodes[gen-1]
+
+            for element in xrange(len_adj - 1, -1, -1):
+                if xMin <= row[element] <= xMax:
+                    if yMin <= col[element] <= yMax:
+                        row = np.delete(row, element)
+                        col = np.delete(col, element)
+                        item += 1
+                elif yMin <= row[element] <= yMax:
+                    if xMin <= col[element] <= xMax:
+                        row = np.delete(row, element)
+                        col = np.delete(col, element)
+                        item += 1
+            removedItems.append(item)
+
+        data = np.array([1 for i in xrange(row.shape[0])])
+        mtx = sparse.csr_matrix((data, (row, col)))
+
+        return nx.from_scipy_sparse_matrix(mtx), removedItems
+
+    def add_new_edges(aGraph, removed):
+
+        def get_yi(xI):
+
+            if xI > (numberOfNodes[i] - exceptiveRx):
+                yI = random.randint(1, numberOfNodes[i - 1] - exceptiveRy)
+            elif xI < (numberOfNodes[i - 1] + numberOfNodes[i - 2]):
+                yI = random.randint(1, numberOfNodes[i - 1] - numberOfNodes[i - 2])
+                # yI = random.randint(1, numberOfNodes[i - 1])
+            else:
+                yI = random.randint(1, numberOfNodes[i - 1])
+            return yI
+
+        edgeList = aGraph.edges()
+        for i in xrange(2, n):
+            exceptiveRy = math.trunc(r * numberOfNodes[i - 1])
+            # exceptiveRx = math.trunc(r * numberOfNodes[i - 1])
+            exceptiveRx = math.trunc(r * (numberOfNodes[i] - numberOfNodes[i - 1]))
+            squareR = math.trunc(r * numberOfNodes[i - 1])
+
+
+            for j in xrange(removed[i-2]):
+                xI = random.randint(numberOfNodes[i - 1], numberOfNodes[i])
+                yI = get_yi(xI)
+                # print i, xI, yI
+                if [xI, yI] not in edgeList:
+                    edgeList.append([xI, yI])
+
+        aGraph = nx.from_edgelist(edgeList)
+        return aGraph
+
+    n += 1
     if x < 1 or y < 2 or n < 2:
         return "Error in input data"
     # Initializing graph
     aGraph = nx.Graph()
-    aGraph.probability = {}
     name = "flower_x=" + repr(x) + "_y=" + repr(y) + \
-           "_n=" + repr(n) + "_r=" + repr(r)
+           "_n=" + repr(n)
     aGraph.name = name
 
-    #Add first 2 nodes and 1 edge
+    # Add first 2 nodes and 1 edge
     aGraph.add_node(0)
     aGraph.add_node(1)
     aGraph.add_edge(0, 1)
 
-    #Generating new nodes
-    for iterations in xrange(1, n):
-        #List of edges
+    numberOfNodes, numberOfEdges = numberOfEdgesAndNodes(1, 2)
+    # Generating new nodes
+    for generation in xrange(1, n):
+        # List of edges
         edges = aGraph.edges()
-
         for edge in edges:
             #Transforming one edge
             aGraph.remove_edge(edge[0], edge[1])
@@ -425,20 +522,21 @@ def evolve_flower_removing_edges(x, y, n, r=0, p=0):
             #we calculate nodes from 0
 
             #Adding line x
+            if x != 1:
+                length = len(aGraph)
+                #First node at line x
+                aGraph.add_node(length)
+                aGraph.add_edge(edge[0], length)
 
-            length = len(aGraph)
-            #First node at line x
-            aGraph.add_node(length)
-            aGraph.add_edge(edge[0], length)
-
-            #Rest nodes at line x
-            if x > 1:
-                for new in xrange(length + 1, length + x - 1):
-                    aGraph.add_node(new)
-                    aGraph.add_edge(new - 1, new)
-            #Last edge
-            aGraph.add_edge(edge[1], len(aGraph) - 1)
-
+                #Rest nodes at line x
+                if x > 1:
+                    for new in xrange(length + 1, length + x - 1):
+                        aGraph.add_node(new)
+                        aGraph.add_edge(new - 1, new)
+                #Last edge
+                aGraph.add_edge(edge[1], len(aGraph) - 1)
+            else:
+                aGraph.add_edge(edge[0], edge[1])
             #Adding line y
 
             length = len(aGraph)
@@ -453,8 +551,14 @@ def evolve_flower_removing_edges(x, y, n, r=0, p=0):
                     aGraph.add_edge(new - 1, new)
             #Last edge
             aGraph.add_edge(edge[1], len(aGraph) - 1)
-    #Removing edges
-    remove_edges(aGraph, r, p)
+
+    if r != 0:
+        aGraph, removed = remove_edges()
+        aGraph = add_new_edges(aGraph, removed)
+    print len(aGraph.edges())
+    name = "flower_removing_x=" + repr(x) + "_y=" + repr(y) + \
+           "_n=" + repr(n - 1) + "_r=" + repr(r)
+    aGraph.name = name
     return aGraph
 
 
@@ -474,14 +578,14 @@ def evolve_flower_with_briebery(x, y, n, r=0, p=0):
            "_n=" + repr(n) + "_r=" + repr(r)
     aGraph.name = name
 
-    #Add first 2 nodes and 1 edge
+    # Add first 2 nodes and 1 edge
     aGraph.add_node(0)
     aGraph.add_node(1)
     aGraph.add_edge(0, 1)
 
-    #Generating new nodes
+    # Generating new nodes
     for iterations in xrange(1, n):
-        #List of edges
+        # List of edges
         edges = aGraph.edges()
 
         for edge in edges:

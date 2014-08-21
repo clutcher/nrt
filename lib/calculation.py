@@ -29,15 +29,33 @@ def calculate_nyu_decorated(aGraph):
     nyu = 0
     degreeDif = []
     yi = list(aGraph.degree().values())
+    yi.sort(reverse=True)
     yi = list(set(yi))
-    yi.sort()
-    # yi.reverse()
-    for i in xrange(len(yi)/2):
+    print yi
+    for i in xrange(len(yi)-1):
         degreeDif.append(yi[i+1]-yi[i])
     nyu = max(degreeDif)
-    if max(degreeDif) < 4:
+    if max(degreeDif) < 1:
         nyu = 0
-    return nyu
+
+    degreeOpt = []
+    tmp = 0
+    for degr in degreeDif:
+        if degr == 1:
+            if tmp == 0:
+                degreeOpt.append(1)
+            else:
+                degreeOpt.append(tmp)
+                degreeOpt.append(1)
+                tmp = 0
+        else:
+            tmp += degr
+    if tmp != 0:
+        degreeOpt.append(tmp)
+
+    print degreeDif
+    print degreeOpt
+    return degreeOpt[0]
 
 
 def calculate_linear_least_square(x, y):

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import lib.generator as generator
 import lib.graphics as graphics
-import lib.matrix as matrix
+import lib.matrix2 as matrix
 import lib.calculation as calculation
 
 def spectrum(aGraph):
@@ -52,17 +52,41 @@ if __name__ == '__main__':
 #    matrix.write_image_from_matrix(G2)
 #    G3 = generator.evolve_ba_with_briebery(1000, 20, 0, 3)
 #    matrix.write_image_from_matrix(G3)
-    r = 0.51
+#     r = 0.51
 #     maxAll = []
 #     minAll = []
-    while r<0.92:
-        G = generator.evolve_decorated_flower_adj(1, 2, 7, r)
-        dgr = calculation.calculate_nyu_decorated(G)
-        graphics.make_rank_distribution(G)
-        print r,  dgr
-        r += 0.1
-    G = generator.evolve_decorated_flower_adj(1, 2, 7, 0.99)
-    graphics.make_rank_distribution(G)
+#     while r<0.92:
+#         G = generator.evolve_decorated_flower_adj(1, 2, 7, r)
+#         dgr = calculation.calculate_nyu_decorated(G)
+#         graphics.make_rank_distribution(G)
+#         print r,  dgr
+#         r += 0.1
+#     r =0.78
+#     while r<0.84:
+#     G = generator.evolve_decorated_flower_adj(1, 2, 8, 0.81)
+    # matrix.write_image_from_matrix(G)
+    # graphics.make_rank_distribution(G)
+    # dgr = calculation.calculate_nyu_decorated(G)
+    # print dgr
+        # r = r+0.01
+#     G = generator.evolve_decorated_flower(1,2,7)
+    # print G.number_of_nodes()
+    # print G.number_of_edges()
+    # matrix.write_image_from_matrix(G)
+    # dgr = calculation.calculate_nyu_decorated(G)
+    # print dgr, len(G)
+    # graphics.make_rank_distribution(G)
     #     print r
     # print minAll
-    # print maxAll
+    # print max
+
+    G = generator.evolve_flower_removing_edges(1, 2, 6, 0.9)
+    print G.number_of_edges()
+    matrix.write_image_from_matrix(G)
+    graphics.make_rank_distribution(G)
+    # print sorted(G.degree(), reverse=True)
+    # G.edges()
+    # for edge in G.edges():
+    #     print edge
+    # mapping=dict(zip(G.nodes(),"abcde"))
+    # nx.relabel_nodes(G, mapping, copy=False)

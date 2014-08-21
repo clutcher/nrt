@@ -6,7 +6,7 @@ import lib.calculation as calculation
 
 numberOfRealization = 15
 numberOfRealizationRc = 1
-generation = 9
+generation = 6
 
 
 def make_dir():
@@ -72,7 +72,7 @@ def count_parametrs(rc):
 
     print 'And now we have a lot of computations! Wait a week.'
     try:
-        while r < rc + 0.01:
+        while r < 0.99:
             print r
             nyuAv = []
             cAv = []
@@ -80,7 +80,7 @@ def count_parametrs(rc):
             asortAv = []
 
             for i in xrange(numberOfRealization):
-                G = generator.evolve_decorated_flower_adj(1, 2, generation, r)
+                G = generator.evolve_decorated_flower_adj(2, 3, generation, r)
                 nyuTmp = calculation.calculate_nyu_decorated(G)
                 if nyuTmp:
                     nyuAv.append(nyuTmp)
@@ -105,7 +105,7 @@ def count_parametrs(rc):
             asortAll.append(asort)
 
             xi.append(float(r - rc) / rc)
-            r += 0.0001
+            r += 0.1
     except:
         pass
     print 'Yes! It`s done! Writing data to file.'
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # count_rank_distribution()
 
     # rc = count_rc()
-    rc = 0.91
+    rc = 0.
     count_parametrs(rc)
     # print rc
     print 'End'
