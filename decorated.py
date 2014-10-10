@@ -69,7 +69,7 @@ if __name__ == '__main__':
     # dgr = calculation.calculate_nyu_decorated(G)
     # print dgr
         # r = r+0.01
-#     G = generator.evolve_decorated_flower(1,2,7)
+    G = generator.evolve_decorated_flower(1,2,7)
     # print G.number_of_nodes()
     # print G.number_of_edges()
     # matrix.write_image_from_matrix(G)
@@ -79,11 +79,18 @@ if __name__ == '__main__':
     #     print r
     # print minAll
     # print max
+    # print nx.average_clustering(G)
+    # giant = next(nx.connected_component_subgraphs(G))
+    # print nx.average_shortest_path_length(giant)
+    # print nx.degree_assortativity_coefficient(G)
 
-    G = generator.evolve_flower_removing_edges(1, 2, 6, 0.9)
-    print G.number_of_edges()
-    matrix.write_image_from_matrix(G)
-    graphics.make_rank_distribution(G)
+    # print nx.average_clustering(G)
+    # print G.number_of_edges()
+    # matrix.write_image_from_matrix(G)
+    # graphics.make_rank_distribution(G)
+    # x = [0.77, 0.78, 0.8, 0.9]
+    # y = [3., 4., 7., 27.]
+    # graphics.make_coeficient_graphic(x, y, 'test')
     # print sorted(G.degree(), reverse=True)
     # G.edges()
     # for edge in G.edges():

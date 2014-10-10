@@ -21,6 +21,23 @@ def calculate_nyu(aGraph):
             n = 0
     return nyu
 
+def calculate_nyu_decorated_old(aGraph):
+    """Calculating razriv on rank distribution graphic
+        nyu ~ (r-rc)^t for decorated flowers
+    """
+    nyu = 0
+    degreeDif = []
+    yi = list(aGraph.degree().values())
+    yi = list(set(yi))
+    yi.sort()
+    # yi.reverse()
+    for i in xrange(len(yi)/2):
+        degreeDif.append(yi[i+1]-yi[i])
+    nyu = max(degreeDif)
+    if max(degreeDif) < 4:
+        nyu = 0
+    return nyu
+
 
 def calculate_nyu_decorated(aGraph):
     """Calculating razriv on rank distribution graphic
@@ -56,6 +73,7 @@ def calculate_nyu_decorated(aGraph):
     print degreeDif
     print degreeOpt
     return degreeOpt[0]
+
 
 
 def calculate_linear_least_square(x, y):

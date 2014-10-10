@@ -143,7 +143,7 @@ def make_rank_distribution(aGraph):
         pass
     fname = "Graphics/rank/" + aGraph.name + ".png"
     plt.savefig(fname)
-    plt.show()
+    # plt.show()
     plt.close('all')
 
 
@@ -160,7 +160,7 @@ def make_coeficient_graphic(r, coef, name):
     plt.title(title)
     plt.plot(r, coef, 'ro')
     #Making approximation line
-    c, t = calculation.calculate_degree_least_square(r[4:], coef[4:])
+    c, t = calculation.calculate_degree_least_square(r[:], coef[:])
     yi = []
     for x in r:
         yi.append(c * (x ** t))
@@ -169,8 +169,8 @@ def make_coeficient_graphic(r, coef, name):
     text = "t= " + repr(t)
     plt.text(1, 1, text)
 
-#    plt.yscale('log')
-#    plt.xscale('log')
+    plt.yscale('log')
+    plt.xscale('log')
     plt.xlabel("(r-rc)/rc")
     plt.ylabel(name)
     try:

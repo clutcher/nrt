@@ -4,9 +4,9 @@ import networkx as nx
 import lib.generator as generator
 import lib.calculation as calculation
 
-numberOfRealization = 15
+numberOfRealization = 100
 numberOfRealizationRc = 1
-generation = 6
+generation = 8
 
 
 def make_dir():
@@ -71,79 +71,82 @@ def count_parametrs(rc):
     asortAv = []
 
     print 'And now we have a lot of computations! Wait a week.'
-    try:
-        while r < 0.99:
-            print r
-            nyuAv = []
-            cAv = []
-            spAv = []
-            asortAv = []
+    # try:
+    while r < 0.82:
+        print r
+        nyuAv = []
+        cAv = []
+        spAv = []
+        asortAv = []
 
-            for i in xrange(numberOfRealization):
-                G = generator.evolve_decorated_flower_adj(2, 3, generation, r)
-                nyuTmp = calculation.calculate_nyu_decorated(G)
-                if nyuTmp:
-                    nyuAv.append(nyuTmp)
-                cAv.append(nx.average_clustering(G))
-                spComponent = 0
-                for spGraph in nx.connected_component_subgraphs(G):
-                    spComponent += nx.average_shortest_path_length(spGraph)
-                spAv.append(float(spComponent) / len(nx.connected_component_subgraphs(G)))
-                asortAv.append(nx.degree_assortativity_coefficient(G))
+        for i in xrange(numberOfRealization):
+            G = generator.evolve_decorated_flower_adj(1, 2, generation, r)
+            nyuTmp = calculation.calculate_nyu_decorated_old(G)
+            if nyuTmp:
+                nyuAv.append(nyuTmp)
+            cAv.append(nx.average_clustering(G))
+            # spComponent = 0
+            # for spGraph in nx.connected_component_subgraphs(G):
+            #     spComponent += nx.average_shortest_path_length(spGraph)
+            # spAv.append(float(spComponent) / len(nx.connected_component_subgraphs(G)))
+            giant = next(nx.connected_component_subgraphs(G))
+            spAv.append(nx.average_shortest_path_length(giant))
+            asortAv.append(nx.degree_assortativity_coefficient(G))
 
-            if len(nyuAv) != 0:
-                nyu = sum(nyuAv) / float(len(nyuAv))
-            else:
-                nyu = 0
-            c = sum(cAv) / float(numberOfRealization)
-            sp = sum(spAv) / float(numberOfRealization)
-            asort = sum(asortAv) / float(numberOfRealization)
+        if len(nyuAv) != 0:
+            nyu = sum(nyuAv) / float(len(nyuAv))
+        else:
+            nyu = 0
+        c = sum(cAv) / float(numberOfRealization)
+        sp = sum(spAv) / float(numberOfRealization)
+        asort = sum(asortAv) / float(numberOfRealization)
 
-            nyuAll.append(nyu)
-            cAll.append(c)
-            spAll.append(sp)
-            asortAll.append(asort)
+        nyuAll.append(nyu)
+        cAll.append(c)
+        spAll.append(sp)
+        asortAll.append(asort)
 
-            xi.append(float(r - rc) / rc)
-            r += 0.1
-    except:
-        pass
+        # xi.append(float(r - rc) / rc)
+        xi.append(r)
+        r += 0.005
+    # except:
+    #     pass
     print 'Yes! It`s done! Writing data to file.'
 
     #Saving parametrs to file
-    fc = open('data/findTxDecor.txt', 'w')
+    fc = open('data-flower/x.txt', 'w')
     for x in xi:
         fc.write(str(x) + '\n')
     fc.close()
 
-    fc = open('data/findTEttaDecor.txt', 'w')
+    fc = open('data-flower/etta-razriv.txt', 'w')
     for nyu in nyuAll:
         fc.write(str(nyu) + '\n')
     fc.close()
 
-    fc = open('data/findTcDecor.txt', 'w')
+    fc = open('data-flower/clustering.txt', 'w')
     for c in cAll:
         fc.write(str(c) + '\n')
     fc.close()
 
-    fc = open('data/findTspDecor.txt', 'w')
+    fc = open('data-flower/shortpath.txt', 'w')
     for sp in spAll:
         fc.write(str(sp) + '\n')
     fc.close()
 
-    fc = open('data/findTasortDecor.txt', 'w')
+    fc = open('data-flower/asortativity.txt', 'w')
     for asort in asortAll:
         fc.write(str(asort) + '\n')
     fc.close()
 
-    fX = open('data/eta_findTxDecor.txt', 'w')
-    fE = open('data/etafindTEttaDecor.txt', 'w')
-    for i, nyu in enumerate(nyuAll):
-        if nyu != 0:
-            fE.write(str(nyu) + '\n')
-            fX.write(str(xi[i]) + '\n')
-    fX.close()
-    fE.close()
+    # fX = open('data/eta_findTxDecor.txt', 'w')
+    # fE = open('data/etafindTEttaDecor.txt', 'w')
+    # for i, nyu in enumerate(nyuAll):
+    #     if nyu != 0:
+    #         fE.write(str(nyu) + '\n')
+    #         fX.write(str(xi[i]) + '\n')
+    # fX.close()
+    # fE.close()
 
 if __name__ == '__main__':
     make_dir()
@@ -151,7 +154,7 @@ if __name__ == '__main__':
     # count_rank_distribution()
 
     # rc = count_rc()
-    rc = 0.
+    rc = 0.4
     count_parametrs(rc)
     # print rc
     print 'End'

@@ -257,16 +257,44 @@ def evolve_decorated_flower_adj(x, y, n, r=0., p=0.8):
             numberOfNodes.append((x + y) * numberOfNodes[-1] - (x + y))
         return numberOfNodes, numberOfEdges
 
+    def get_probability_y(nodes, substracted=0):
+
+        probabiltyMask = [0.57,0.88,0.98,1]
+        probability = random.random()
+
+        intervals = nodes/4
+        segments = [intervals, 2*intervals, 3*intervals, nodes]
+
+        if substracted:
+            segments.append(nodes-substracted)
+            segments = [i for i in segments if i<=nodes-substracted]
+            segments = list(set(segments))
+            segments.sort()
+
+        if probability<=probabiltyMask[0]:
+            yProbability = random.randint(1, segments[0])
+        elif probability<=probabiltyMask[1] and len(segments)>=2:
+            yProbability = random.randint(segments[0], segments[1])
+        elif probability<=probabiltyMask[1] and len(segments)>=3:
+            yProbability = random.randint(segments[1], segments[2])
+        elif probability<=probabiltyMask[1] and len(segments)>=4:
+            yProbability = random.randint(segments[2], segments[3])
+        else:
+            yProbability = random.randint(1, nodes-substracted)
+
+
+        return yProbability
+
     def get_yi(xI):
         if xI > (numNodes[i] - exceptiveRx):
-            yI = random.randint(1, numNodes[i - 1] - exceptiveRy)
+            yI = get_probability_y(numNodes[i - 1], exceptiveRy)
         elif xI < (numNodes[i - 1] + numNodes[i - 2]):
-            yI = random.randint(1, numNodes[i - 1] - numNodes[i - 2])
+            yI = get_probability_y(numNodes[i - 1], numNodes[i - 2])
             # yI = random.randint(1, numNodes[i - 1])
         else:
-            yI = random.randint(1, numNodes[i - 1])
+            yI = get_probability_y(numNodes[i - 1])
 
-        # if xI > (numNodes[i] - exceptiveRx):;/OO;;llllllllllllllllllllllllllllllllllllllllll mmmmmmmmmmmm
+        # if xI > (numNodes[i] - exceptiveRx):
         # if (numNodes[i-1]-exceptiveRy)>numNodes[i-2]:
         #         if random.random()<p:
         #             yI = random.randint(1, numNodes[i-2])
@@ -317,6 +345,16 @@ def evolve_decorated_flower_adj(x, y, n, r=0., p=0.8):
 
         while len(edgeList) < numEdges[i]:
             xI = random.randint(numNodes[i - 1], numNodes[i])
+            interval = (numNodes[i] - numNodes[i-1])/4
+            if xI <= (numNodes[i-1]+interval):
+                pass
+            elif (numNodes[i-1]+interval)<=xI<=(numNodes[i-1]+2*interval):
+                pass
+            elif (numNodes[i-1]+2*interval)<=xI<=(numNodes[i-1]+3*interval):
+                pass
+            else:
+                pass
+
             yI = get_yi(xI)
 
             # if (2 * numNodes[i - 1] - numNodes[i - 2]) < xI < (numNodes[i] - squareR):
@@ -555,7 +593,7 @@ def evolve_flower_removing_edges(x, y, n, r=0):
     if r != 0:
         aGraph, removed = remove_edges()
         aGraph = add_new_edges(aGraph, removed)
-    print len(aGraph.edges())
+    # print len(aGraph.edges())
     name = "flower_removing_x=" + repr(x) + "_y=" + repr(y) + \
            "_n=" + repr(n - 1) + "_r=" + repr(r)
     aGraph.name = name

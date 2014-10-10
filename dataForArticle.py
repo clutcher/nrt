@@ -9,7 +9,7 @@ global n
 global numberOfRealization
 global step
 
-n = 1000
+n = 5000
 numberOfRealization = 5
 step = 0.01
 
@@ -112,7 +112,7 @@ def count_parametrs(rc):
         if 0.40 <= r <= 0.60:
             r += step
         else:
-            r += 0.1
+            r += 0.01
 
     print 'Yes! It`s done! Writing data to file.'
 
