@@ -43,37 +43,86 @@ def calculate_nyu_decorated(aGraph):
     """Calculating razriv on rank distribution graphic
         nyu ~ (r-rc)^t for decorated flowers
     """
-    nyu = 0
-    degreeDif = []
+    import numpy as np
+    import scipy.optimize
+    import scipy.interpolate
+    import scipy.misc
+    import sympy
+
+
+    def remove_stages(x, y):
+        i = 0
+        length = len(x)
+        while i < length - 1:
+            j = i
+            counter = 0
+            while y[i] == y[j + 1]:
+                j += 1
+                counter += 1
+
+                if len(y) <= j + 1:
+                    break
+
+            if counter:
+                xp = sum(x[i:j + 1]) / (counter + 1)
+                yp = y[i]
+
+                del x[i:j + 1]
+                del y[i:j + 1]
+
+                x.insert(i, xp)
+                y.insert(i, yp)
+
+            i += 1
+            length = len(x)
+        return x, y
+
+    def sigmoid_curve(x, a, b, c, d, e, f):
+        y = a + b * x + c * np.arctan(x) + d * np.arctan(e * x + f)
+        return y
+
+    def curvature_for_opt(x, a, b, c, d, e, f, revert=0):
+        res = ((-(2 * d * (f + e * x) * e * e) / ((f + e * x) ** 2 + 1) ** 2 - (2 * c * x) / (x * x + 1) ** 2)) / ((b + c / (x * x + 1) + (d * e) / ((e * x + f) ** 2 + 1)) ** 2 + 1) ** (3 / 2)
+        if revert:
+            res = -res
+        if res>0:
+            res = 0
+        return res
+
+    def find_zero_point(a, b, c, d, e, f):
+        x = sympy.symbols('x')
+        res = sympy.solve(b+c/(x*x+1)+d*e/((e*x+f)**2+1),x,exclude=[a,b,c,d,e,f])
+        for num in res:
+            dotx = math.sqrt(complex(num).real ** 2 + complex(num).imag ** 2)
+        return dotx
+
+    def make_log(xi, yi):
+        x = [np.log(x) for x in xi[1:]]
+        y = [np.log(y) for y in yi[1:]]
+        return x, y
+
+    def get_fit_params(xi, yi):
+        popt, pcov = scipy.optimize.curve_fit(sigmoid_curve, xi, yi, p0=None, maxfev=100000000)
+        return popt
+
     yi = list(aGraph.degree().values())
     yi.sort(reverse=True)
-    yi = list(set(yi))
-    print yi
-    for i in xrange(len(yi)-1):
-        degreeDif.append(yi[i+1]-yi[i])
-    nyu = max(degreeDif)
-    if max(degreeDif) < 1:
-        nyu = 0
+    xi = [x for x in xrange(len(yi))]
 
-    degreeOpt = []
-    tmp = 0
-    for degr in degreeDif:
-        if degr == 1:
-            if tmp == 0:
-                degreeOpt.append(1)
-            else:
-                degreeOpt.append(tmp)
-                degreeOpt.append(1)
-                tmp = 0
-        else:
-            tmp += degr
-    if tmp != 0:
-        degreeOpt.append(tmp)
+    xi, yi = remove_stages(xi, yi)
+    xi, yi = make_log(xi, yi)
+    xi = np.array(xi[20:])
+    yi = np.array(yi[20:])
 
-    print degreeDif
-    print degreeOpt
-    return degreeOpt[0]
+    popt = get_fit_params(xi, yi)
 
+    guess_point =  find_zero_point(*popt)
+    x_hight = scipy.optimize.basinhopping(lambda arg: curvature_for_opt(arg, *popt), guess_point, niter_success=100000).x
+    x_low =  scipy.optimize.basinhopping(lambda arg: curvature_for_opt(arg, *popt, revert = 1), guess_point, niter_success=100000).x
+    etta = abs(np.e**sigmoid_curve(x_hight, *popt)-np.e**sigmoid_curve(x_low, *popt))
+    if etta<1:
+        etta = 0
+    return float(etta)
 
 
 def calculate_linear_least_square(x, y):

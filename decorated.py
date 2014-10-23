@@ -29,13 +29,12 @@ if __name__ == '__main__':
     #plt.plot(frequency.keys(), frequency.values(), 'ro')
     #plt.show()
 
-    # r = 0.99
-    # while r<1:
-    #     G = generator.evolve_decorated_flower_adj(1, 2, 10, r, 0.)
-    #     nyutemp = calculation.calculate_nyu_decorated(G)
-    #     print r, nyutemp
-    #     print len(G)
-    #     r += 0.01
+    r = 0.5
+    while r<1:
+        G = generator.evolve_decorated_flower_adj(1, 2, 8, r)
+        nyutemp = calculation.calculate_nyu_decorated(G)
+        print r, nyutemp
+        r += 0.1
 #        graphics.make_rank_distribution(G)
 #    graphics.make_probability_graphic(G)
 ##    graphics.make_graph(G)

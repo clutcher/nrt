@@ -39,16 +39,16 @@ def make_coeficient_graphic(fnameX, fnameY, a, b, c, name, ylabel):
 
     # for i, value in enumerate(yi):
     #     yi[i] = yi[i] - c
-    firstvalue = yi[0]
+    # firstvalue = yi[0]
     # linestyle = '-'
-    linestyle = 'None'
+    # linestyle = 'None'
 
-    print xi[81:]
-    print yi[81:]
-    xi = [math.log((x-0.8)/0.8) for x in xi[81:]]
+    # print xi[81:]
+    # print yi[81:]
+    # xi = [math.log((x-0.8)/0.8) for x in xi[81:]]
 
-    # xi = [math.log(x) for x in xi[20:-30]]
-    yi = [math.log(y/firstvalue) for y in yi[81:]]
+    xi = [math.log(x) for x in xi]
+    yi = [math.log(y) for y in yi]
     # xi = xi[:-20]
     # yi = yi[:-20]
 
@@ -107,15 +107,15 @@ def make_coeficient_graphic(fnameX, fnameY, a, b, c, name, ylabel):
 #                         'Gap')
 
 
-make_coeficient_graphic('data/flower/x.txt', 'data/flower/asortativity.txt', -1.054, 0.963, -0.181, 'flowerAsort',
-                        'Assortativity')
-make_coeficient_graphic('data/flower/x.txt', 'data/flower/clustering.txt', 0.229, 1.216, 0.005919, 'flowerClustering',
-                        'Clustering')
-make_coeficient_graphic('data/flower/x.txt', 'data/flower/shortpath.txt', 0.22, 0.817, 1.336, 'flowerShort',
-                        'Shortest path')
-# make_coeficient_graphic('data/flower/x-non.txt', 'data/flower/eta-razriv-non.txt', 1.505, 0.256, 3.863, 'flowerGap',
-#                         'Gap')
+# make_coeficient_graphic('data/flower/x.txt', 'data/flower/asortativity.txt', -1.054, 0.963, -0.181, 'flowerAsort',
+#                         'Assortativity')
+# make_coeficient_graphic('data/flower/x.txt', 'data/flower/clustering.txt', 0.229, 1.216, 0.005919, 'flowerClustering',
+#                         'Clustering')
+# make_coeficient_graphic('data/flower/x.txt', 'data/flower/shortpath.txt', 0.22, 0.817, 1.336, 'flowerShort',
+#                         'Shortest path')
+make_coeficient_graphic('data/flower/x1.txt', 'data/flower/etta-razriv1.txt', 1.505, 0.256, 3.863, 'flowerGap',
+                        'Gap')
 
-fname = "flowerParamsLog.png"
+fname = "flowerGap.png"
 plt.savefig(fname)
 plt.close('all')
