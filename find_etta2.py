@@ -97,7 +97,7 @@ def get_fit_params(xi, yi):
 
 
 if __name__ == "__main__":
-    G = generator.evolve_decorated_flower_adj(1, 2, 8, 0.835)
+    G = generator.evolve_decorated_flower_adj(1, 2, 8, 0.65)
 
     yi = list(G.degree().values())
     yi.sort(reverse=True)
@@ -120,3 +120,14 @@ if __name__ == "__main__":
     x_low =  scipy.optimize.basinhopping(lambda arg: curvature_for_opt(arg, *popt, revert = 1), guess_point, niter_success=100000).x
     etta = abs(np.e**sigmoid_curve(x_hight, *popt)-np.e**sigmoid_curve(x_low, *popt))
     print etta
+
+    # Plot the results
+    # plt.plot(x, y, '.')
+    plt.plot(xi, yi, '.')
+    plt.plot(xi, y_sigmoid, '-')
+    # plt.plot(xi, [curvature_for_opt(arg, *popt) for arg in xi], '-.')
+    # plt.plot(xi, [curvature_for_opt(arg, *popt, revert=1) for arg in xi], '-.')
+    plt.xlabel('x')
+    plt.ylabel('y', rotation='horizontal')
+    plt.grid(True)
+    plt.show()

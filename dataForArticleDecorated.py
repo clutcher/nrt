@@ -4,7 +4,7 @@ import networkx as nx
 import lib.generator as generator
 import lib.calculation as calculation
 
-numberOfRealization = 15
+numberOfRealization = 10
 numberOfRealizationRc = 1
 generation = 8
 
@@ -21,7 +21,7 @@ def make_dir():
     except OSError:
         pass
     try:
-        os.makedirs('data')
+        os.makedirs('data-flower-new')
     except OSError:
         pass
 
@@ -71,73 +71,73 @@ def count_parametrs(rc):
     asortAv = []
 
     print 'And now we have a lot of computations! Wait a week.'
-    # try:
-    while r < 0.83:
-        print r
-        nyuAv = []
-        cAv = []
-        spAv = []
-        asortAv = []
+    try:
+        while r < 0.83:
+            print r
+            nyuAv = []
+            cAv = []
+            spAv = []
+            asortAv = []
 
-        for i in xrange(numberOfRealization):
-            G = generator.evolve_decorated_flower_adj(1, 2, generation, r)
-            nyuTmp = calculation.calculate_nyu_decorated(G)
-            if nyuTmp:
-                nyuAv.append(nyuTmp)
-            # cAv.append(nx.average_clustering(G))
-            # spComponent = 0
-            # for spGraph in nx.connected_component_subgraphs(G):
-            #     spComponent += nx.average_shortest_path_length(spGraph)
-            # spAv.append(float(spComponent) / len(nx.connected_component_subgraphs(G)))
-            # giant = next(nx.connected_component_subgraphs(G))
-            # spAv.append(nx.average_shortest_path_length(giant))
-            # asortAv.append(nx.degree_assortativity_coefficient(G))
+            for i in xrange(numberOfRealization):
+                G = generator.evolve_decorated_flower_adj(1, 2, generation, r)
+                nyuTmp = calculation.calculate_nyu_decorated(G)
+                if nyuTmp:
+                    nyuAv.append(nyuTmp)
+                cAv.append(nx.average_clustering(G))
+                # spComponent = 0
+                # for spGraph in nx.connected_component_subgraphs(G):
+                #     spComponent += nx.average_shortest_path_length(spGraph)
+                # spAv.append(float(spComponent) / len(nx.connected_component_subgraphs(G)))
+                # giant = next(nx.connected_component_subgraphs(G))
+                # spAv.append(nx.average_shortest_path_length(giant))
+                asortAv.append(nx.degree_assortativity_coefficient(G))
 
-        if len(nyuAv) != 0:
-            nyu = sum(nyuAv) / float(len(nyuAv))
-        else:
-            nyu = 0
-        # c = sum(cAv) / float(numberOfRealization)
-        # sp = sum(spAv) / float(numberOfRealization)
-        # asort = sum(asortAv) / float(numberOfRealization)
+            if len(nyuAv) != 0:
+                nyu = sum(nyuAv) / float(len(nyuAv))
+            else:
+                nyu = 0
+            c = sum(cAv) / float(numberOfRealization)
+            # sp = sum(spAv) / float(numberOfRealization)
+            asort = sum(asortAv) / float(numberOfRealization)
 
-        nyuAll.append(nyu)
-        # cAll.append(c)
-        # spAll.append(sp)
-        # asortAll.append(asort)
+            nyuAll.append(nyu)
+            cAll.append(c)
+            # spAll.append(sp)
+            asortAll.append(asort)
 
-        # xi.append(float(r - rc) / rc)
-        xi.append(r)
-        r += 0.005
-    # except:
-    #     pass
+            # xi.append(float(r - rc) / rc)
+            xi.append(r)
+            r += 0.0001
+    except:
+        pass
     print 'Yes! It`s done! Writing data to file.'
 
     #Saving parametrs to file
-    fc = open('data-flower/x.txt', 'w')
+    fc = open('data-flower-new/x.txt', 'w')
     for x in xi:
         fc.write(str(x) + '\n')
     fc.close()
 
-    fc = open('data-flower/etta-razriv.txt', 'w')
+    fc = open('data-flower-new/etta-razriv.txt', 'w')
     for nyu in nyuAll:
         fc.write(str(nyu) + '\n')
     fc.close()
 
-    # fc = open('data-flower/clustering.txt', 'w')
-    # for c in cAll:
-    #     fc.write(str(c) + '\n')
-    # fc.close()
+    fc = open('data-flower-new/clustering.txt', 'w')
+    for c in cAll:
+        fc.write(str(c) + '\n')
+    fc.close()
 
-    # fc = open('data-flower/shortpath.txt', 'w')
+    # fc = open('data-flower-new/shortpath.txt', 'w')
     # for sp in spAll:
     #     fc.write(str(sp) + '\n')
     # fc.close()
 
-    # fc = open('data-flower/asortativity.txt', 'w')
-    # for asort in asortAll:
-    #     fc.write(str(asort) + '\n')
-    # fc.close()
+    fc = open('data-flower-new/asortativity.txt', 'w')
+    for asort in asortAll:
+        fc.write(str(asort) + '\n')
+    fc.close()
 
     # fX = open('data/eta_findTxDecor.txt', 'w')
     # fE = open('data/etafindTEttaDecor.txt', 'w')
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     # count_rank_distribution()
 
     # rc = count_rc()
-    rc = 0.6
+    rc = 0.76
     count_parametrs(rc)
     # print rc
     print 'End'

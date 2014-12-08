@@ -128,7 +128,7 @@ def make_rank_distribution(aGraph):
     """Make rank distribution by degree graphic"""
     import matplotlib.pyplot as plt
 
-    plt.title("Rank distribution")
+    # plt.title("Rank distribution")
     yi = list(aGraph.degree().values())
     yi.sort(reverse=True)
     xi = [x for x in xrange(len(yi))]

@@ -259,7 +259,7 @@ def evolve_decorated_flower_adj(x, y, n, r=0., p=0.8):
 
     def get_probability_y(nodes, substracted=0):
 
-        probabiltyMask = [0.57,0.88,0.98,1]
+        probabiltyMask = [0.37,0.67,0.89,1]
         probability = random.random()
 
         intervals = nodes/4

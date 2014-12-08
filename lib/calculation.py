@@ -115,12 +115,15 @@ def calculate_nyu_decorated(aGraph):
     yi = np.array(yi[20:])
 
     popt = get_fit_params(xi, yi)
-
-    guess_point =  find_zero_point(*popt)
+    try:
+        guess_point =  find_zero_point(*popt)
+    except:
+        guess_point = 3.0
     x_hight = scipy.optimize.basinhopping(lambda arg: curvature_for_opt(arg, *popt), guess_point, niter_success=100000).x
     x_low =  scipy.optimize.basinhopping(lambda arg: curvature_for_opt(arg, *popt, revert = 1), guess_point, niter_success=100000).x
+
     etta = abs(np.e**sigmoid_curve(x_hight, *popt)-np.e**sigmoid_curve(x_low, *popt))
-    if etta<1:
+    if etta>10 or etta<1 or (abs(popt[4])<10 and abs(popt[5])<100):
         etta = 0
     return float(etta)
 
